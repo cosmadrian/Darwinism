@@ -3,15 +3,9 @@ package input;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
-import frontend.MainFrame;
-
 public class UserInput implements MouseListener {
 	
-	private MainFrame frame;
-	public boolean ok = false;
-	
-	public UserInput(MainFrame frame){
-		this.frame = frame;
+	public UserInput(){
 	}
 
 	
