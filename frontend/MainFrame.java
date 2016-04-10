@@ -8,7 +8,6 @@ import java.awt.event.MouseListener;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-import entities.Entity;
 import main.Aggregator;
 
 public class MainFrame extends JFrame {
@@ -36,18 +35,9 @@ public class MainFrame extends JFrame {
 		this.setResizable(false);
 	}
 
-	public void showStat(Entity e) {
-		stat.setVisible(true);
-		repaint();
-	}
-
-	public void removeStat() {
-		stat.setVisible(false);
-		repaint();
-	}
-
 	public void setInputHandler(MouseListener i) {
 		this.input = i;
+		this.addMouseListener(i);
 	}
 
 	public void addPanel(JPanel j) {
@@ -55,11 +45,13 @@ public class MainFrame extends JFrame {
 
 		this.add(stat);
 		stat.addMouseListener(input);
+		stat.setVisible(true);
 	}
 
 	@Override
 	public void paint(Graphics g) {
 		super.paint(g);
+		stat.repaint();
 		Graphics2D g2d = (Graphics2D)g;
 		g.setColor(Color.WHITE);
 		g.fillRect(0, 0, WIDTH, HEIGHT);

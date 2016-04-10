@@ -1,17 +1,27 @@
 package entities.traits;
 
-public class Fertility implements Trait{
+public class Fertility implements Trait {
+
+	private int value;
 
 	@Override
 	public String getName() {
-		// TODO Auto-generated method stub
-		return null;
+		return "Fertility";
 	}
 
 	@Override
 	public void update() {
-		// TODO Auto-generated method stub
-		
+
+	}
+
+	@Override
+	public int getValue() {
+		return value;
+	}
+
+	@Override
+	public void setValue(int value) {
+		this.value = value;
 	}
 
 }

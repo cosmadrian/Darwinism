@@ -1,17 +1,26 @@
 package entities.traits;
 
-public class Hunger implements Trait{
+public class Hunger implements Trait {
+
+	int value;
 
 	@Override
 	public String getName() {
-		// TODO Auto-generated method stub
-		return null;
+		return "Hunger";
 	}
 
 	@Override
 	public void update() {
-		// TODO Auto-generated method stub
-		
+	}
+
+	@Override
+	public int getValue() {
+		return value;
+	}
+
+	@Override
+	public void setValue(int value) {
+		this.value = value;
 	}
 
 }

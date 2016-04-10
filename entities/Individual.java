@@ -3,24 +3,32 @@ package entities;
 import java.awt.Graphics2D;
 import java.util.ArrayList;
 
-import entities.states.State;
+import entities.traits.Trait;
+import entities.traits.TraitBuilder;
 
 public abstract class Individual extends Entity {
 
 	private DNA dna;
-	private ArrayList<State> states = new ArrayList<State>();
+	private ArrayList<Trait> traits = new ArrayList<Trait>();
 
 	public Individual(DNA d) {
 		this.dna = d;
+		for(Trait.Type t : Trait.Type.values()){
+			traits.add(TraitBuilder.getInstance().make(t,d));
+		}
 	}
 
-
 	public void render(Graphics2D g) {
-		int radius = 30;
-		int xOffset = radius / 2;
-		int yOffset = radius / 2;
 
-		g.fillOval(x - xOffset, y - yOffset, radius / 2, radius / 2);
+	}
+
+	@Override
+	public String toString() {
+		String x = "ID: " + this.id + "\n";
+		for(Trait t : traits){
+			x += "* " + t.getName() + ": " + t.getValue() + "\n";
+		}
+		return x;
 	}
 
 }

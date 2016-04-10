@@ -58,7 +58,7 @@ public class Simulator implements Runnable {
 			}
 
 			if (System.currentTimeMillis() - lastTimer >= 1000) {
-				//System.out.println(frames + " frames ; " + ticks + " ticks");
+				// System.out.println(frames + " frames ; " + ticks + " ticks");
 				lastTimer += 1000;
 				frames = 0;
 				ticks = 0;
@@ -80,9 +80,8 @@ public class Simulator implements Runnable {
 		frame.setVisible(true);
 		frame.setInputHandler(new UserInput());
 		frame.addPanel(new StatPanel());
-		frame.removeStat();
 
-		Aggregator.getInstance().setEntities(EntityBuilder.getInstance().populate(20));
+		Aggregator.getInstance().setEntities(EntityBuilder.getInstance().populate(50));
 		Aggregator.getInstance().addEntities(EntityBuilder.getInstance().cookFood(50));
 
 	}

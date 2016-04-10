@@ -1,17 +1,12 @@
 package entities.traits;
 
-public class Aggressiveness implements Trait {
+public class Combat implements Trait {
 
 	private int value;
 
 	@Override
 	public String getName() {
-		return "Aggressiveness";
-	}
-
-	@Override
-	public void update() {
-
+		return "Combat";
 	}
 
 	@Override
@@ -22,6 +17,11 @@ public class Aggressiveness implements Trait {
 	@Override
 	public void setValue(int value) {
 		this.value = value;
+	}
+
+	@Override
+	public void update() {
+
 	}
 
 }

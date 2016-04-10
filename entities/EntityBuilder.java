@@ -1,9 +1,12 @@
 package entities;
 
+import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Random;
 
 import frontend.MainFrame;
+import frontend.StatPanel;
+import main.Aggregator;
 
 public class EntityBuilder {
 	private static EntityBuilder instance = null;
@@ -15,24 +18,26 @@ public class EntityBuilder {
 		return instance;
 	}
 
-	/* TODO: make clusters for food */
 	public Entity make(Entity.Type t) {
 		Entity e = null;
 		Random r = new Random();
 		switch (t) {
 		case MALE:
-			e = new MaleIndividual(new DNA(DNA.generateStrand())).withX(r.nextInt(MainFrame.WIDTH))
+			e = new MaleIndividual(new DNA(DNA.generateStrand())).withX(r.nextInt(MainFrame.WIDTH - StatPanel.WIDTH))
 					.withY(r.nextInt(MainFrame.HEIGHT));
 			break;
 		case FEMALE:
-			e = new FemaleIndividual(new DNA(DNA.generateStrand())).withX(r.nextInt(MainFrame.WIDTH))
+			e = new FemaleIndividual(new DNA(DNA.generateStrand())).withX(r.nextInt(MainFrame.WIDTH - StatPanel.WIDTH))
 					.withY(r.nextInt(MainFrame.HEIGHT));
 			break;
 		case FOOD:
-			e = new Food(new Random().nextInt(Food.MAX_FOOD / 2) + Food.MAX_FOOD / 2).withX(r.nextInt(MainFrame.WIDTH))
-					.withY(r.nextInt(MainFrame.HEIGHT));
+			e = new Food(new Random().nextInt(Food.MAX_FOOD / 2) + Food.MAX_FOOD / 2)
+					.withX(r.nextInt(MainFrame.WIDTH - StatPanel.WIDTH)).withY(r.nextInt(MainFrame.HEIGHT));
 			break;
 		}
+
+		Aggregator.getInstance().put(new Point(e.getX(), e.getY()), e);
+
 		return e;
 	}
 

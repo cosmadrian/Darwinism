@@ -10,5 +10,7 @@ public interface Trait {
 	}
 	
 	public String getName();
+	public int getValue();
+	public void setValue(int value);
 	public void update();
 }

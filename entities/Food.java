@@ -33,4 +33,9 @@ public class Food extends Entity {
 
 		g.setColor(c);
 	}
+
+	@Override
+	public String toString() {
+		return "Food\n\nID: " + this.id + "\n* Quantity: " + quantity;
+	}
 }
