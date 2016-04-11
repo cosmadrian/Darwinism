@@ -41,6 +41,7 @@ public class EntityBuilder {
 			e.setY((int)p.getY());
 		}
 
+		Aggregator.getInstance().addEntity(e);
 		Aggregator.getInstance().put(new Point(e.getX(), e.getY()), e);
 
 		return e;

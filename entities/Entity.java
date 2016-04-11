@@ -5,7 +5,7 @@ import java.awt.Point;
 
 import main.Aggregator;
 
-public class Entity {
+public abstract class Entity {
 	public static enum Type {
 		FOOD, MALE, FEMALE
 	};
@@ -49,16 +49,14 @@ public class Entity {
 		return this;
 	}
 
-	public void render(Graphics g) {
-	}
+	public abstract void render(Graphics g);
 
-	public void update() {
-	}
+	public abstract void update();
 
 	public void die() {
 		Aggregator.getInstance().kill(this);
-		
-		Aggregator.getInstance().addEntity(EntityBuilder.getInstance().make(Entity.Type.FOOD,new Point(x,y)));
+
+		Aggregator.getInstance().addEntity(EntityBuilder.getInstance().make(Entity.Type.FOOD, new Point(x, y)));
 	}
 
 	/* resets all the stats for this entity */

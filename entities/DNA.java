@@ -36,7 +36,12 @@ public class DNA {
 	}
 
 	/* TODO */
-	public DNA combine(DNA male, DNA female) {
+	public static DNA combine(DNA male, DNA female) {
 		return new DNA(DNA.generateStrand());
+	}
+
+	/* TODO */
+	public Entity.Type getGender() {
+		return Entity.Type.MALE;
 	}
 }

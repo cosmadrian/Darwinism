@@ -48,4 +48,9 @@ public class Food extends Entity {
 	public String toString() {
 		return "Food\n\nID: " + this.id + "\n* Quantity: " + quantity;
 	}
+
+	@Override
+	public void update() {
+		
+	}
 }

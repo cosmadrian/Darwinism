@@ -33,7 +33,7 @@ public class MaleIndividual extends Individual {
 	}
 
 	public void update() {
-
+		super.update();
 	}
 
 	@Override
