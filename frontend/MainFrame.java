@@ -24,7 +24,7 @@ public class MainFrame extends JFrame {
 	private void init() {
 		this.setTitle(TITLE);
 		this.setSize(WIDTH, HEIGHT);
-		this.setBackground(Color.GRAY);
+		this.setBackground(Color.WHITE);
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		this.setLocationRelativeTo(null);
 		this.setLayout(null);

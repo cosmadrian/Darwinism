@@ -13,23 +13,29 @@ import main.Main;
 
 public class MaleIndividual extends Individual {
 
-	private BufferedImage maleIcon;
+	private BufferedImage maleIcon = null;
 	private int xOffset = 15, yOffset = 15;
 
 	public MaleIndividual(DNA d) {
 		super(d);
-		try {
-			maleIcon = Main.toBufferedImage(Main.TransformColorToTransparency(
-					ImageIO.read(new File("src/male.png")).getScaledInstance(15, 15, Image.SCALE_DEFAULT),
-					Color.green));
-
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		
 	}
 
 	public void render(Graphics g) {
+		if(maleIcon == null){
+			try {
+				maleIcon = Main.toBufferedImage(Main.TransformColorToTransparency(
+						ImageIO.read(new File("src/male.png")).getScaledInstance(15, 15, Image.SCALE_DEFAULT),
+						Color.green));
+
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 		g.drawImage(maleIcon, x - xOffset, y - yOffset, maleIcon.getWidth(), maleIcon.getHeight(), null);
+		
+		if (Main.DEBUG)
+			g.drawOval(x - LOS - xOffset / 2, y - LOS - yOffset / 2, 2 * LOS, 2 * LOS);
 	}
 
 	public void update() {

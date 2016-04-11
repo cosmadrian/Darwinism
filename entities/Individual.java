@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import entities.states.CallingState;
 import entities.states.EatingState;
 import entities.states.FightingState;
+import entities.states.FleeingState;
 import entities.states.IdleState;
 import entities.states.MatingState;
 import entities.states.MovingState;
@@ -22,6 +23,7 @@ public abstract class Individual extends Entity {
 	private State matingState;
 	private State callingState;
 	private State fightingState;
+	private State fleeingState;
 
 	private ArrayList<Trait> traits = new ArrayList<Trait>();
 	private DNA dna;
@@ -41,6 +43,7 @@ public abstract class Individual extends Entity {
 		matingState = new MatingState(this);
 		callingState = new CallingState(this);
 		fightingState = new FightingState(this);
+		fleeingState = new FleeingState(this);
 
 		this.state = idleState;
 	}
@@ -78,6 +81,9 @@ public abstract class Individual extends Entity {
 		case IDLE:
 			this.state = idleState;
 			break;
+		case FLEEING:
+			this.state = fleeingState;
+			break;
 		}
 	}
 
@@ -87,6 +93,9 @@ public abstract class Individual extends Entity {
 		for (Trait t : traits) {
 			x += "* " + t.getName() + ": " + t.getValue() + "\n";
 		}
+		x += "\nNearby Food: " + this.getNearbyFood().size() + "\n";
+		x += "Nearby Females: " + this.getNearbyFemales().size() + "\n";
+		x += "Nearby Males: " + this.getNearbyMales().size() + "\n";
 		x += "\nState: " + state.getName() + "\n";
 		return x;
 	}

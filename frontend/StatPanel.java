@@ -30,7 +30,7 @@ public class StatPanel extends JPanel {
 		
 		this.add(text);
 		text.setVisible(true);
-		text.setBounds(0, 0, WIDTH, 200);
+		text.setBounds(0, 0, WIDTH, HEIGHT);
 	}
 
 	public String getStats() {

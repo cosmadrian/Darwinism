@@ -1,9 +1,7 @@
 package entities.traits;
 
-public class Stamina implements Trait {
+public class Stamina extends Trait {
 
-	private int value;
-	
 	@Override
 	public String getName() {
 		return "Stamina";
@@ -12,16 +10,6 @@ public class Stamina implements Trait {
 	@Override
 	public void update() {
 
-	}
-
-	@Override
-	public int getValue() {
-		return value;
-	}
-
-	@Override
-	public void setValue(int value) {
-		this.value = value;
 	}
 
 }

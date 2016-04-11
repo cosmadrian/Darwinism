@@ -16,7 +16,7 @@ import main.Main;
 
 public class FemaleIndividual extends Individual {
 
-	private BufferedImage femaleIcon;
+	private BufferedImage femaleIcon = null;
 	private int xOffset = 13, yOffset = 13;
 	private boolean isPregnant = false;
 	private DNA childDNA;
@@ -24,21 +24,27 @@ public class FemaleIndividual extends Individual {
 
 	public FemaleIndividual(DNA d) {
 		super(d);
-
-		try {
-			femaleIcon = Main.toBufferedImage(Main.TransformColorToTransparency(
-					ImageIO.read(new File("src/female.png")).getScaledInstance(13, 13, Image.SCALE_DEFAULT),
-					Color.green));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 	}
 
 	public void render(Graphics g) {
+
+		if (femaleIcon == null) {
+			try {
+				femaleIcon = Main.toBufferedImage(Main.TransformColorToTransparency(
+						ImageIO.read(new File("src/female.png")).getScaledInstance(13, 13, Image.SCALE_DEFAULT),
+						Color.green));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+
 		g.drawImage(femaleIcon, x - xOffset, y - yOffset, femaleIcon.getWidth(), femaleIcon.getHeight(), null);
+		
+		if (Main.DEBUG)
+			g.drawOval(x - LOS - xOffset / 2, y - LOS - yOffset / 2, 2 * LOS, 2 * LOS);
 	}
-	
-	public void update(){
+
+	public void update() {
 		super.update();
 	}
 

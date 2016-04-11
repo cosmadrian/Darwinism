@@ -1,8 +1,6 @@
 package entities.traits;
 
-public class Aggressiveness implements Trait {
-
-	private int value;
+public class Aggressiveness extends Trait {
 
 	@Override
 	public String getName() {
@@ -13,15 +11,4 @@ public class Aggressiveness implements Trait {
 	public void update() {
 
 	}
-
-	@Override
-	public int getValue() {
-		return value;
-	}
-
-	@Override
-	public void setValue(int value) {
-		this.value = value;
-	}
-
 }

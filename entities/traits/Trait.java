@@ -1,12 +1,21 @@
 package entities.traits;
 
-public interface Trait {
+public abstract class Trait {
 	public static enum Type {
 		AGGRESSIVENESS, FERTILITY, STAMINA, COMBAT, HUNGER, SPEED
 	}
 
-	public String getName();
-	public int getValue();
-	public void setValue(int value);
-	public void update();
+	private int value;
+
+	public int getValue() {
+		return value;
+	}
+
+	public void setValue(int value) {
+		this.value = value;
+	}
+
+	public abstract void update();
+
+	public abstract String getName();
 }

@@ -23,10 +23,10 @@ public class EntityBuilder {
 		Random r = new Random();
 		switch (t) {
 		case MALE:
-			e = new MaleIndividual(new DNA(DNA.generateStrand()));
+			e = new MaleIndividual(new DNA(DNA.generateStrand(Entity.Type.MALE)));
 			break;
 		case FEMALE:
-			e = new FemaleIndividual(new DNA(DNA.generateStrand()));
+			e = new FemaleIndividual(new DNA(DNA.generateStrand(Entity.Type.FEMALE)));
 			break;
 		case FOOD:
 			e = new Food(r.nextInt(Food.MAX_FOOD / 2) + Food.MAX_FOOD / 2);

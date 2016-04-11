@@ -1,8 +1,6 @@
 package entities.traits;
 
-public class Hunger implements Trait {
-
-	int value;
+public class Hunger extends Trait {
 
 	@Override
 	public String getName() {
@@ -12,15 +10,4 @@ public class Hunger implements Trait {
 	@Override
 	public void update() {
 	}
-
-	@Override
-	public int getValue() {
-		return value;
-	}
-
-	@Override
-	public void setValue(int value) {
-		this.value = value;
-	}
-
 }
