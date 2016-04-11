@@ -35,6 +35,9 @@ public class TraitBuilder {
 		case COMBAT:
 			trait = new Combat();
 			break;
+		case SPEED:
+			trait = new Speed();
+			break;
 		}
 		trait.setValue(d.getTraitInfluence(t));
 		return trait;

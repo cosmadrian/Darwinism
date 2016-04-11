@@ -1,10 +1,10 @@
 package map;
 
-import java.awt.Graphics2D;
+import java.awt.Graphics;
 
 public class Map {
 
-	public void render(Graphics2D g) {
+	public void render(Graphics g) {
 
 	}
 

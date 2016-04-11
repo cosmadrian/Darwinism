@@ -3,6 +3,7 @@ package frontend;
 import java.awt.Color;
 import java.awt.Graphics;
 
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import entities.Entity;
@@ -15,6 +16,8 @@ public class StatPanel extends JPanel {
 	public static final int WIDTH = 200;
 	public static final int HEIGHT = 480;
 
+	private JLabel text = new JLabel();
+
 	public StatPanel() {
 		init();
 	}
@@ -24,27 +27,24 @@ public class StatPanel extends JPanel {
 		this.setLocation(MainFrame.WIDTH - WIDTH, 0);
 		this.setBackground(Color.WHITE);
 		this.setLayout(null);
+		
+		this.add(text);
+		text.setVisible(true);
+		text.setBounds(0, 0, WIDTH, 200);
 	}
 
 	public String getStats() {
 		Entity entity = Aggregator.getInstance().selectedEntity;
-		
+
 		if (entity != null)
 			return entity.toString();
 		return "";
 	}
 
-	@Override
-	public void paint(Graphics g){
-		g.setColor(Color.WHITE);
-		g.fillRect(0, 0, WIDTH, HEIGHT);
-		g.setColor(Color.BLACK);
+	public void render(Graphics g) {
+		String formatted = "<html>" + getStats().replace("\n", "<br>") + "</html>";
 		
-		int x = 10;
-		int y = 20;
-		for(String line : getStats().split("\n")){
-			g.drawString(line, x, y += g.getFontMetrics().getHeight());
-		}
+		text.setText(formatted);
 	}
 	
 }

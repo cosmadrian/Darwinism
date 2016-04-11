@@ -1,5 +1,8 @@
 package main;
 
+import java.awt.Graphics;
+import java.awt.image.BufferStrategy;
+
 import entities.EntityBuilder;
 import frontend.MainFrame;
 import frontend.StatPanel;
@@ -58,7 +61,7 @@ public class Simulator implements Runnable {
 			}
 
 			if (System.currentTimeMillis() - lastTimer >= 1000) {
-				// System.out.println(frames + " frames ; " + ticks + " ticks");
+				//System.out.println(frames + " frames ; " + ticks + " ticks");
 				lastTimer += 1000;
 				frames = 0;
 				ticks = 0;
@@ -72,7 +75,18 @@ public class Simulator implements Runnable {
 	}
 
 	public void render() {
-		frame.repaint();
+		BufferStrategy bs = frame.getBufferStrategy();
+		if (bs == null) {
+			frame.createBufferStrategy(3);
+			return;
+		}
+		Graphics g = bs.getDrawGraphics();
+
+		frame.render(g);
+		Aggregator.getInstance().renderEntities(g);
+		
+		g.dispose();
+		bs.show();
 	}
 
 	public void init() {
@@ -82,7 +96,7 @@ public class Simulator implements Runnable {
 		frame.addPanel(new StatPanel());
 
 		Aggregator.getInstance().setEntities(EntityBuilder.getInstance().populate(50));
-		Aggregator.getInstance().addEntities(EntityBuilder.getInstance().cookFood(50));
+		Aggregator.getInstance().addEntities(EntityBuilder.getInstance().cookFood(20));
 
 	}
 

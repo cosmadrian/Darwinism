@@ -1,6 +1,6 @@
 package main;
 
-import java.awt.Graphics2D;
+import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.ArrayList;
@@ -9,16 +9,16 @@ import java.util.HashMap;
 import entities.Entity;
 import map.Map;
 import map.MapGenerator;
+import objectPool.ObjectPool;
 
 public class Aggregator {
 
+	private static Aggregator instance = null;
 	private ArrayList<Entity> entities;
 	private HashMap<Rectangle, Entity> positions;
 	private Map map;
-	
-	public Entity selectedEntity = null;
 
-	private static Aggregator instance = null;
+	public Entity selectedEntity = null;
 
 	private Aggregator() {
 		entities = new ArrayList<Entity>();
@@ -33,13 +33,13 @@ public class Aggregator {
 		return instance;
 	}
 
-	public void renderEntities(Graphics2D g) {
+	public void renderEntities(Graphics g) {
 		for (Entity e : entities) {
 			e.render(g);
 		}
 	}
 
-	public void renderMap(Graphics2D g) {
+	public void renderMap(Graphics g) {
 		map.render(g);
 	}
 
@@ -57,6 +57,10 @@ public class Aggregator {
 		this.entities.addAll(e);
 	}
 
+	public void addEntity(Entity e) {
+		this.entities.add(e);
+	}
+
 	public ArrayList<Entity> getEntities() {
 		return this.entities;
 	}
@@ -69,15 +73,33 @@ public class Aggregator {
 		}
 		return null;
 	}
+	
+	public HashMap<Rectangle,Entity> getPositions(){
+		return this.positions;
+	}
 
-	/* TODO: improve performance */
 	public void put(Point p, Entity e) {
 		int xOffset = 15;
 		int yOffset = 15;
 
-		Rectangle r = new Rectangle((int) (p.getX() - xOffset), (int) (p.getY() - yOffset), 2 * xOffset, 2 * yOffset);
+		Rectangle r = new Rectangle((int) (p.getX() - xOffset), (int) (p.getY() - yOffset), xOffset, yOffset);
 
 		positions.put(r, e);
+	}
+
+	public void kill(Entity e) {
+		entities.remove(e);
+		Point p = new Point(e.getX(), e.getY());
+		for (Rectangle r : positions.keySet()) {
+			if (r.contains(p) && positions.get(r).equals(e)) {
+				positions.remove(r);
+				break;
+			}
+		}
+		if (selectedEntity.equals(e))
+			selectedEntity = null;
+
+		ObjectPool.getInstance().bury(e);
 	}
 
 }

@@ -1,6 +1,9 @@
 package entities;
 
-import java.awt.Graphics2D;
+import java.awt.Graphics;
+import java.awt.Point;
+
+import main.Aggregator;
 
 public class Entity {
 	public static enum Type {
@@ -35,20 +38,31 @@ public class Entity {
 	public void setY(int y) {
 		this.y = y;
 	}
-	
-	public Entity withX(int x){
+
+	public Entity withX(int x) {
 		this.x = x;
 		return this;
 	}
-	
-	public Entity withY(int y){
+
+	public Entity withY(int y) {
 		this.y = y;
 		return this;
 	}
 
-	public void render(Graphics2D g) {
+	public void render(Graphics g) {
 	}
 
 	public void update() {
+	}
+
+	public void die() {
+		Aggregator.getInstance().kill(this);
+		
+		Aggregator.getInstance().addEntity(EntityBuilder.getInstance().make(Entity.Type.FOOD,new Point(x,y)));
+	}
+
+	/* resets all the stats for this entity */
+	public void reset() {
+
 	}
 }

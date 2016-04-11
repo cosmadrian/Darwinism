@@ -1,27 +1,35 @@
 package entities;
 
 import java.awt.Color;
-import java.awt.Graphics2D;
+import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
+
+import main.Main;
 
 public class MaleIndividual extends Individual {
 
-	private Color c = Color.blue;
+	private BufferedImage maleIcon;
+	private int xOffset = 15, yOffset = 15;
 
 	public MaleIndividual(DNA d) {
 		super(d);
+		try {
+			maleIcon = Main.toBufferedImage(Main.TransformColorToTransparency(
+					ImageIO.read(new File("src/male.png")).getScaledInstance(15, 15, Image.SCALE_DEFAULT),
+					Color.green));
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
-	public void render(Graphics2D g) {
-		Color temp = g.getColor();
-		g.setColor(c);
-
-		int radius = 30;
-		int xOffset = radius / 2;
-		int yOffset = radius / 2;
-
-		g.fillOval(x - xOffset, y - yOffset, radius / 2, radius / 2);
-
-		g.setColor(temp);
+	public void render(Graphics g) {
+		g.drawImage(maleIcon, x - xOffset, y - yOffset, maleIcon.getWidth(), maleIcon.getHeight(), null);
 	}
 
 	public void update() {

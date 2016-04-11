@@ -1,17 +1,35 @@
 package entities;
 
 import java.awt.Color;
-import java.awt.Graphics2D;
+import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
+
+import main.Main;
 
 public class Food extends Entity {
 
 	public static final int MAX_FOOD = 100;
 
-	private Color color = new Color(77, 193, 85);
+	private BufferedImage foodIcon;
+	private int xOffset = 11, yOffset = 11;
 	private int quantity;
 
 	public Food(int i) {
 		this.quantity = i;
+
+		try {
+			foodIcon = Main.toBufferedImage(Main.TransformColorToTransparency(
+					ImageIO.read(new File("src/food.png")).getScaledInstance(11, 11, Image.SCALE_DEFAULT),
+					Color.green));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
 	}
 
 	public int getQuantity() {
@@ -22,16 +40,8 @@ public class Food extends Entity {
 		this.quantity = quantity;
 	}
 
-	public void render(Graphics2D g) {
-		Color c = g.getColor();
-		g.setColor(color);
-
-		int[] xCoords = { x, x - 7, x + 7 };
-		int[] yCoords = { y - 10, y + 2, y + 2 };
-
-		g.fillPolygon(xCoords, yCoords, 3);
-
-		g.setColor(c);
+	public void render(Graphics g) {
+		g.drawImage(foodIcon, x - xOffset, y - yOffset, foodIcon.getWidth(), foodIcon.getHeight(), null);
 	}
 
 	@Override

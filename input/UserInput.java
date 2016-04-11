@@ -1,6 +1,5 @@
 package input;
 
-import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
@@ -14,7 +13,7 @@ public class UserInput implements MouseListener {
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		Aggregator.getInstance().selectedEntity = Aggregator.getInstance().getEntityByPosition(new Point(e.getX(), e.getY()));
+		Aggregator.getInstance().selectedEntity = Aggregator.getInstance().getEntityByPosition(e.getPoint());
 	}
 
 	@Override

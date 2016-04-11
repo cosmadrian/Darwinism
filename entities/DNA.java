@@ -5,8 +5,8 @@ import java.util.Random;
 import entities.traits.Trait;
 
 public class DNA {
-	public static final int TRAIT_COUNT = Trait.Type.values().length;
-	public static final int BYTES_PER_TRAIT = 1;
+	private static final int TRAIT_COUNT = Trait.Type.values().length;
+	public static final int BYTES_PER_TRAIT = 3;
 
 	private String strand;
 
