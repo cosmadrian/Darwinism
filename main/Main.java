@@ -11,19 +11,27 @@ import java.awt.image.ImageProducer;
 import java.awt.image.RGBImageFilter;
 
 import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 
 public class Main {
-	public static boolean DEBUG = true;
+
+	public static final boolean DEBUG = false;
 
 	public static void main(String[] args) {
-		SwingUtilities.invokeLater(new Runnable() {
 
+		try {
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
+				| UnsupportedLookAndFeelException e) {
+			e.printStackTrace();
+		}
+		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
 				Simulator s = new Simulator();
 				s.start();
 			}
-
 		});
 	}
 

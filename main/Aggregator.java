@@ -1,28 +1,25 @@
 package main;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import entities.Entity;
 import map.Map;
 import map.MapGenerator;
-import objectPool.ObjectPool;
 
 public class Aggregator {
 
 	private static Aggregator instance = null;
 	private ArrayList<Entity> entities;
-	private HashMap<Rectangle, Entity> positions;
 	private Map map;
 
 	public Entity selectedEntity = null;
 
 	private Aggregator() {
 		entities = new ArrayList<Entity>();
-		positions = new HashMap<Rectangle, Entity>();
 		map = MapGenerator.getInstance().generate();
 	}
 
@@ -35,6 +32,10 @@ public class Aggregator {
 
 	public void renderEntities(Graphics g) {
 		for (Entity e : entities) {
+			if(e.equals(selectedEntity)){
+				g.setColor(Color.BLACK);
+				g.drawRect(e.getX() - 15, e.getY() - 15, 15, 15);
+			}
 			e.render(g);
 		}
 	}
@@ -66,40 +67,24 @@ public class Aggregator {
 	}
 
 	public Entity getEntityByPosition(Point p) {
-		for (Rectangle r : positions.keySet()) {
-			if (r.contains(p)) {
-				return positions.get(r);
-			}
+		int xOffset = 20, yOffset = 20;
+		Rectangle r = new Rectangle((int) p.getX(), (int) p.getY(), xOffset, yOffset);
+		for (Entity e : entities) {
+			if (r.contains(e.getX(), e.getY()))
+				return e;
 		}
 		return null;
 	}
-	
-	public HashMap<Rectangle,Entity> getPositions(){
-		return this.positions;
-	}
-
-	public void put(Point p, Entity e) {
-		int xOffset = 15;
-		int yOffset = 15;
-
-		Rectangle r = new Rectangle((int) (p.getX() - xOffset), (int) (p.getY() - yOffset), xOffset, yOffset);
-
-		positions.put(r, e);
-	}
 
 	public void kill(Entity e) {
-		entities.remove(e);
-		Point p = new Point(e.getX(), e.getY());
-		for (Rectangle r : positions.keySet()) {
-			if (r.contains(p) && positions.get(r).equals(e)) {
-				positions.remove(r);
-				break;
-			}
+
+		e.die();
+		if (entities.remove(e)) {
+			// System.out.println("removed id" + e.id);
 		}
+
 		if (selectedEntity.equals(e))
 			selectedEntity = null;
-
-		ObjectPool.getInstance().bury(e);
 	}
 
 }

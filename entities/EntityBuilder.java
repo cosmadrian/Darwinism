@@ -9,6 +9,7 @@ import frontend.StatPanel;
 import main.Aggregator;
 
 public class EntityBuilder {
+
 	private static EntityBuilder instance = null;
 
 	public static EntityBuilder getInstance() {
@@ -18,15 +19,20 @@ public class EntityBuilder {
 		return instance;
 	}
 
-	public Entity make(Entity.Type t, Point p) {
+	public Entity make(Entity.Type t, Point p, DNA d) {
 		Entity e = null;
 		Random r = new Random();
+
+		if (d == null) {
+			d = new DNA(DNA.generateStrand(t));
+		}
+
 		switch (t) {
 		case MALE:
-			e = new MaleIndividual(new DNA(DNA.generateStrand(Entity.Type.MALE)));
+			e = new MaleIndividual(d);
 			break;
 		case FEMALE:
-			e = new FemaleIndividual(new DNA(DNA.generateStrand(Entity.Type.FEMALE)));
+			e = new FemaleIndividual(d);
 			break;
 		case FOOD:
 			e = new Food(r.nextInt(Food.MAX_FOOD / 2) + Food.MAX_FOOD / 2);
@@ -36,13 +42,13 @@ public class EntityBuilder {
 		if (p == null) {
 			e.setX(r.nextInt(MainFrame.WIDTH - StatPanel.WIDTH));
 			e.setY(r.nextInt(MainFrame.HEIGHT));
-		}else{
-			e.setX((int)p.getX());
-			e.setY((int)p.getY());
+
+		} else {
+			e.setY((int) p.getY());
+			e.setX((int) p.getX());
 		}
 
 		Aggregator.getInstance().addEntity(e);
-		Aggregator.getInstance().put(new Point(e.getX(), e.getY()), e);
 
 		return e;
 	}
@@ -54,9 +60,9 @@ public class EntityBuilder {
 		for (int i = 0; i < count; i++) {
 			double chance = r.nextDouble();
 			if (chance > 0.5)
-				a.add(make(Entity.Type.MALE, null));
+				a.add(make(Entity.Type.MALE, null, null));
 			else
-				a.add(make(Entity.Type.FEMALE, null));
+				a.add(make(Entity.Type.FEMALE, null, null));
 		}
 
 		return a;
@@ -66,7 +72,7 @@ public class EntityBuilder {
 		ArrayList<Entity> a = new ArrayList<Entity>();
 
 		for (int i = 0; i < count; i++) {
-			a.add(make(Entity.Type.FOOD, null));
+			a.add(make(Entity.Type.FOOD, null, null));
 		}
 
 		return a;

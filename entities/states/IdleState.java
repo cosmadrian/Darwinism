@@ -19,6 +19,9 @@ public class IdleState extends State implements ActionListener {
 	public void update() {
 		if (!timer.isRunning()) {
 			timer.start();
+		}else{
+			source.setVx(0);
+			source.setVy(0);
 		}
 	}
 

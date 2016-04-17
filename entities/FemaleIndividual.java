@@ -38,10 +38,11 @@ public class FemaleIndividual extends Individual {
 			}
 		}
 
-		g.drawImage(femaleIcon, x - xOffset, y - yOffset, femaleIcon.getWidth(), femaleIcon.getHeight(), null);
-		
+		g.drawImage(femaleIcon, (int) (x - xOffset), (int) (y - yOffset), femaleIcon.getWidth(), femaleIcon.getHeight(),
+				null);
+
 		if (Main.DEBUG)
-			g.drawOval(x - LOS - xOffset / 2, y - LOS - yOffset / 2, 2 * LOS, 2 * LOS);
+			g.drawOval((int) (x - LOS - xOffset / 2), (int) (y - LOS - yOffset / 2), 2 * LOS, 2 * LOS);
 	}
 
 	public void update() {
@@ -71,10 +72,10 @@ public class FemaleIndividual extends Individual {
 
 		if (childDNA.getGender() == Entity.Type.MALE) {
 			d = (Individual) EntityBuilder.getInstance().make(Entity.Type.MALE,
-					new Point(x + (r.nextInt(20) - 10), y + (r.nextInt(20) - 10)));
+					new Point((int) x + (r.nextInt(20) - 10), (int) y + (r.nextInt(20) - 10)), childDNA);
 		} else if (childDNA.getGender() == Entity.Type.FEMALE) {
 			d = (Individual) EntityBuilder.getInstance().make(Entity.Type.FEMALE,
-					new Point(x + (r.nextInt(20) - 10), y + (r.nextInt(20) - 10)));
+					new Point((int) x + (r.nextInt(20) - 10), (int) y + (r.nextInt(20) - 10)), childDNA);
 		}
 
 		d.setMother(this);

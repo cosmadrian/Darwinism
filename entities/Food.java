@@ -9,6 +9,7 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
+import main.Aggregator;
 import main.Main;
 
 public class Food extends Entity {
@@ -40,8 +41,13 @@ public class Food extends Entity {
 		this.quantity = quantity;
 	}
 
+	public void consume(int amount) {
+		this.quantity -= amount;
+	}
+
 	public void render(Graphics g) {
-		g.drawImage(foodIcon, x - xOffset, y - yOffset, foodIcon.getWidth(), foodIcon.getHeight(), null);
+		g.drawImage(foodIcon, (int) (x - xOffset), (int) (y - yOffset), foodIcon.getWidth(), foodIcon.getHeight(),
+				null);
 	}
 
 	@Override
@@ -51,6 +57,10 @@ public class Food extends Entity {
 
 	@Override
 	public void update() {
-		
+		if (quantity <= 0)
+			Aggregator.getInstance().kill(this);
+	}
+
+	public void die() {
 	}
 }

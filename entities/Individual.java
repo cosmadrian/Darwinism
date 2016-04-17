@@ -1,6 +1,6 @@
 package entities;
 
-import java.awt.Graphics2D;
+import java.awt.Graphics;
 import java.util.ArrayList;
 
 import entities.states.CallingState;
@@ -14,28 +14,31 @@ import entities.states.State;
 import entities.states.States;
 import entities.traits.Trait;
 import entities.traits.TraitBuilder;
+import frontend.MainFrame;
+import frontend.StatPanel;
 
 public abstract class Individual extends Entity {
 
-	private State idleState;
-	private State movingState;
-	private State eatingState;
-	private State matingState;
-	private State callingState;
-	private State fightingState;
-	private State fleeingState;
+	private State idleState, movingState, eatingState, matingState, callingState, fightingState, fleeingState;
 
+	private Trait aggressiveness, combat, fertility, hunger, speed, stamina;
 	private ArrayList<Trait> traits = new ArrayList<Trait>();
+
 	private DNA dna;
 	private State state;
 	private MaleIndividual father = null;
 	private FemaleIndividual mother = null;
 
+	private double vx, vy;
+
 	public Individual(DNA d) {
 		this.dna = d;
-		for (Trait.Type t : Trait.Type.values()) {
-			traits.add(TraitBuilder.getInstance().make(t, d));
-		}
+		traits.add((aggressiveness = TraitBuilder.getInstance().make(Trait.Type.AGGRESSIVENESS, d)));
+		traits.add(combat = TraitBuilder.getInstance().make(Trait.Type.COMBAT, d));
+		traits.add(fertility = TraitBuilder.getInstance().make(Trait.Type.FERTILITY, d));
+		traits.add(hunger = TraitBuilder.getInstance().make(Trait.Type.HUNGER, d));
+		traits.add(speed = TraitBuilder.getInstance().make(Trait.Type.SPEED, d));
+		traits.add(stamina = TraitBuilder.getInstance().make(Trait.Type.STAMINA, d));
 
 		idleState = new IdleState(this);
 		movingState = new MovingState(this);
@@ -48,7 +51,7 @@ public abstract class Individual extends Entity {
 		this.state = idleState;
 	}
 
-	public void render(Graphics2D g) {
+	public void render(Graphics g) {
 
 	}
 
@@ -56,9 +59,17 @@ public abstract class Individual extends Entity {
 		for (Trait t : traits) {
 			t.update();
 		}
+		if (x + vx < 0 || x + vx > MainFrame.WIDTH - StatPanel.WIDTH)
+			vx = -vx;
+		if (y + vy < 0 || y + vy > MainFrame.WIDTH - StatPanel.WIDTH)
+			vy = -vy;
+		x += vx;
+		y += vy;
 
 		state.update();
 
+		if (this.hunger.getValue() == 0)
+			this.die();
 	}
 
 	public void setState(States t) {
@@ -87,6 +98,25 @@ public abstract class Individual extends Entity {
 		}
 	}
 
+	public Trait getTrait(Trait.Type t) {
+		switch (t) {
+		case AGGRESSIVENESS:
+			return aggressiveness;
+		case COMBAT:
+			return combat;
+		case FERTILITY:
+			return fertility;
+		case HUNGER:
+			return hunger;
+		case SPEED:
+			return speed;
+		case STAMINA:
+			return stamina;
+		}
+
+		return null;
+	}
+
 	@Override
 	public String toString() {
 		String x = "ID: " + this.id + "\n";
@@ -108,4 +138,21 @@ public abstract class Individual extends Entity {
 		this.father = m;
 	}
 
+	public void die() {
+		super.die();
+	}
+
+	public void setDirection(double d) {
+		int s = speed.getValue() / 30;
+		vx = ((double) s * Math.cos(d));
+		vy = ((double) s * Math.sin(d));
+	}
+
+	public void setVx(double vx) {
+		this.vx = vx;
+	}
+
+	public void setVy(double vy) {
+		this.vy = vy;
+	}
 }

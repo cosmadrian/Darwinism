@@ -6,6 +6,8 @@ import java.awt.event.MouseListener;
 
 import javax.swing.JFrame;
 
+import map.Map;
+
 public class MainFrame extends JFrame {
 
 	private static final long serialVersionUID = -854357705960199720L;
@@ -13,11 +15,13 @@ public class MainFrame extends JFrame {
 	public static final int HEIGHT = 480;
 	public static final int WIDTH = 880;
 	public static final String TITLE = "Darwinism Simulator V1.0[pre-alpha]";
+	private Map map;
 
 	private MouseListener input;
 	private StatPanel stat;
 
 	public MainFrame() {
+		map = new Map();
 		init();
 	}
 
@@ -45,6 +49,7 @@ public class MainFrame extends JFrame {
 	}
 	
 	public void render(Graphics g){
+		map.render(g);
 		stat.render(g);
 	}
 }

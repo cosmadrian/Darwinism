@@ -2,14 +2,17 @@ package frontend;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import entities.Entity;
 import main.Aggregator;
 
-public class StatPanel extends JPanel {
+public class StatPanel extends JPanel implements ActionListener{
 
 	private static final long serialVersionUID = -7815061674620254354L;
 
@@ -17,6 +20,7 @@ public class StatPanel extends JPanel {
 	public static final int HEIGHT = 480;
 
 	private JLabel text = new JLabel();
+	private JButton killButton = new JButton("Kill");
 
 	public StatPanel() {
 		init();
@@ -27,7 +31,12 @@ public class StatPanel extends JPanel {
 		this.setLocation(MainFrame.WIDTH - WIDTH, 0);
 		this.setBackground(Color.WHITE);
 		this.setLayout(null);
-		
+
+		this.add(killButton);
+		killButton.setVisible(true);
+		killButton.setBounds(20, HEIGHT - 100, 80, 30);
+		killButton.addActionListener(this);
+
 		this.add(text);
 		text.setVisible(true);
 		text.setBounds(0, 0, WIDTH, HEIGHT);
@@ -43,8 +52,15 @@ public class StatPanel extends JPanel {
 
 	public void render(Graphics g) {
 		String formatted = "<html>" + getStats().replace("\n", "<br>") + "</html>";
-		
+
 		text.setText(formatted);
 	}
-	
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		if(Aggregator.getInstance().selectedEntity != null){
+			Aggregator.getInstance().kill(Aggregator.getInstance().selectedEntity);
+		}
+	}
+
 }

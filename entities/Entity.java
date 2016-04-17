@@ -12,10 +12,12 @@ public abstract class Entity {
 	};
 
 	protected static int COUNT = 0;
-	protected int x, y;
+	protected double x, y;
 	public int id;
 
 	protected int LOS = 70;
+	
+	protected ArrayList<Entity> cache = null;
 
 	public Entity() {
 		COUNT++;
@@ -23,15 +25,15 @@ public abstract class Entity {
 	}
 
 	public int getX() {
-		return x;
+		return (int)x;
 	}
 
-	public void setX(int x) {
+	public void setX(double x) {
 		this.x = x;
 	}
 
 	public int getY() {
-		return y;
+		return (int)y;
 	}
 
 	public void setY(int y) {
@@ -48,8 +50,7 @@ public abstract class Entity {
 		return this;
 	}
 
-	/* super inefficient retrieval */
-	private ArrayList<Entity> getNearbyEntities() {
+	private void getNearbyEntities() {
 		ArrayList<Entity> entities = new ArrayList<Entity>();
 
 		for (Entity e : Aggregator.getInstance().getEntities()) {
@@ -61,12 +62,15 @@ public abstract class Entity {
 			}
 		}
 
-		return entities;
+		this.cache = entities;
 	}
 
 	public ArrayList<Food> getNearbyFood() {
+		if(cache == null)
+			getNearbyEntities();
+		
 		ArrayList<Food> food = new ArrayList<Food>();
-		for (Entity e : getNearbyEntities()) {
+		for (Entity e : cache) {
 			if (e instanceof Food)
 				food.add((Food) e);
 		}
@@ -75,9 +79,12 @@ public abstract class Entity {
 	}
 
 	public ArrayList<MaleIndividual> getNearbyMales() {
+		if(cache == null)
+			getNearbyEntities();
+		
 		ArrayList<MaleIndividual> males = new ArrayList<MaleIndividual>();
 
-		for (Entity e : getNearbyEntities()) {
+		for (Entity e : cache) {
 			if (e instanceof MaleIndividual)
 				males.add((MaleIndividual) e);
 		}
@@ -86,9 +93,12 @@ public abstract class Entity {
 	}
 
 	public ArrayList<FemaleIndividual> getNearbyFemales() {
+		if(cache == null)
+			getNearbyEntities();
+		
 		ArrayList<FemaleIndividual> females = new ArrayList<FemaleIndividual>();
 
-		for (Entity e : getNearbyEntities()) {
+		for (Entity e : cache) {
 			if (e instanceof FemaleIndividual)
 				females.add((FemaleIndividual) e);
 		}
@@ -98,16 +108,12 @@ public abstract class Entity {
 
 	public abstract void render(Graphics g);
 
-	public abstract void update();
+	public void update(){
+		this.cache = null;
+	}
 
 	public void die() {
-		Aggregator.getInstance().kill(this);
-
-		Aggregator.getInstance().addEntity(EntityBuilder.getInstance().make(Entity.Type.FOOD, new Point(x, y)));
+		EntityBuilder.getInstance().make(Entity.Type.FOOD, new Point((int)x, (int)y), null);
 	}
 
-	/* resets all the stats for this entity */
-	public void reset() {
-
-	}
 }

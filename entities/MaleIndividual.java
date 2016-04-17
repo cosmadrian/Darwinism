@@ -18,11 +18,11 @@ public class MaleIndividual extends Individual {
 
 	public MaleIndividual(DNA d) {
 		super(d);
-		
+
 	}
 
 	public void render(Graphics g) {
-		if(maleIcon == null){
+		if (maleIcon == null) {
 			try {
 				maleIcon = Main.toBufferedImage(Main.TransformColorToTransparency(
 						ImageIO.read(new File("src/male.png")).getScaledInstance(15, 15, Image.SCALE_DEFAULT),
@@ -32,10 +32,11 @@ public class MaleIndividual extends Individual {
 				e.printStackTrace();
 			}
 		}
-		g.drawImage(maleIcon, x - xOffset, y - yOffset, maleIcon.getWidth(), maleIcon.getHeight(), null);
-		
+		g.drawImage(maleIcon, (int) (x - xOffset), (int) (y - yOffset), maleIcon.getWidth(), maleIcon.getHeight(),
+				null);
+
 		if (Main.DEBUG)
-			g.drawOval(x - LOS - xOffset / 2, y - LOS - yOffset / 2, 2 * LOS, 2 * LOS);
+			g.drawOval((int) (x - LOS - xOffset / 2), (int) (y - LOS - yOffset / 2), 2 * LOS, 2 * LOS);
 	}
 
 	public void update() {

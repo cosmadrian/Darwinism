@@ -5,7 +5,7 @@ public abstract class Trait {
 		AGGRESSIVENESS, FERTILITY, STAMINA, COMBAT, HUNGER, SPEED
 	}
 
-	private int value;
+	protected int value = 0;
 
 	public int getValue() {
 		return value;
