@@ -108,8 +108,8 @@ public abstract class State {
 
 		Random r = new Random();
 
-		int p1 = source.getX() + r.nextInt(10) - 10;
-		int p2 = source.getY() + r.nextInt(10) - 10;
+		int p1 = source.getX() + r.nextInt(10) - 5;
+		int p2 = source.getY() + r.nextInt(10) - 5;
 		double direction = getAngleBetween(new Point(source.getX(), source.getY()), new Point(p1, p2));
 
 		double staminaChance = (double) source.getTrait(Trait.Type.STAMINA).getValue() / 100.0;
@@ -124,13 +124,21 @@ public abstract class State {
 		if (foodDistances.size() == 0) {
 			return new Tuple<Double, Object>(0.0, null);
 		}
+
 		Food closestFood = foodDistances.peek().second;
+
+		if (foodDistances.peek().first <= Individual.RANGE) {
+			return new Tuple<Double, Object>(0.0, null);
+		}
 
 		double hungerChance = (double) (100 - source.getTrait(Trait.Type.HUNGER).getValue()) / 100.0;
 		double direction = getAngleBetween(new Point(source.getX(), source.getY()),
 				new Point(closestFood.getX(), closestFood.getY()));
 
-		movingToEat = new Tuple<Double, Object>(hungerChance, direction);
+		double distance = foodDistances.peek().first;
+		double time = (distance / source.getSpeed()) * 16.6;
+
+		movingToEat = new Tuple<Double, Object>(hungerChance, new Tuple<Double, Integer>(direction, (int) time));
 
 		return movingToEat;
 	}

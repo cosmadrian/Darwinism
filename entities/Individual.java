@@ -7,6 +7,7 @@ import entities.states.CallingState;
 import entities.states.EatingState;
 import entities.states.FightingState;
 import entities.states.FleeingState;
+import entities.states.GoalMoveState;
 import entities.states.IdleState;
 import entities.states.MatingState;
 import entities.states.MovingState;
@@ -19,7 +20,8 @@ import frontend.StatPanel;
 
 public abstract class Individual extends Entity {
 
-	private State idleState, movingState, eatingState, matingState, callingState, fightingState, fleeingState;
+	private State idleState, movingState, eatingState, matingState, callingState, fightingState, fleeingState,
+			movingWithGoal;
 
 	private Trait aggressiveness, combat, fertility, hunger, speed, stamina;
 	private ArrayList<Trait> traits = new ArrayList<Trait>();
@@ -31,7 +33,9 @@ public abstract class Individual extends Entity {
 	private FemaleIndividual mother = null;
 	public static final int RANGE = 18;
 
-	private double vx, vy;
+	protected double vx;
+
+	protected double vy;
 
 	public Individual(DNA d) {
 		this.dna = d;
@@ -49,6 +53,7 @@ public abstract class Individual extends Entity {
 		callingState = new CallingState(this);
 		fightingState = new FightingState(this);
 		fleeingState = new FleeingState(this);
+		movingWithGoal = new GoalMoveState(this);
 
 		this.state = idleState;
 		this.stateType = StateType.IDLE;
@@ -63,10 +68,18 @@ public abstract class Individual extends Entity {
 		for (Trait t : traits) {
 			t.update();
 		}
-		if (x + vx < 0 || x + vx > MainFrame.WIDTH - StatPanel.WIDTH)
+
+		if (stateType != StateType.MOVING && stateType != StateType.MOVING_WITH_GOAL) {
+			vx = 0;
+			vy = 0;
+		}
+
+		if (x + vx < 10 || x + vx > MainFrame.WIDTH - StatPanel.WIDTH - 10) {
 			vx = -vx;
-		if (y + vy < 0 || y + vy > MainFrame.WIDTH - StatPanel.WIDTH)
+		}
+		if (y + vy < 10 || y + vy > MainFrame.HEIGHT - 10) {
 			vy = -vy;
+		}
 		x += vx;
 		y += vy;
 
@@ -78,9 +91,9 @@ public abstract class Individual extends Entity {
 
 	public void setState(StateType t, Object option) {
 		this.stateType = t;
-		
+
 		this.state.clean();
-		
+
 		switch (t) {
 		case MOVING:
 			this.state = movingState;
@@ -103,8 +116,11 @@ public abstract class Individual extends Entity {
 		case FLEEING:
 			this.state = fleeingState;
 			break;
+		case MOVING_WITH_GOAL:
+			this.state = movingWithGoal;
+			break;
 		}
-		
+
 		state.withOption(option);
 	}
 
@@ -126,8 +142,8 @@ public abstract class Individual extends Entity {
 
 		return null;
 	}
-	
-	public StateType getState(){
+
+	public StateType getState() {
 		return this.stateType;
 	}
 
@@ -157,9 +173,10 @@ public abstract class Individual extends Entity {
 	}
 
 	public void setDirection(double d) {
-		double s = speed.getValue() / 30;
+		double s = (double) speed.getValue() / 30.0;
 		vx = ((double) s * Math.cos(d));
 		vy = ((double) s * Math.sin(d));
+
 	}
 
 	public void setVx(double vx) {
@@ -169,8 +186,8 @@ public abstract class Individual extends Entity {
 	public void setVy(double vy) {
 		this.vy = vy;
 	}
-	
-	public double getSpeed(){
-		return Math.sqrt(vx*vx + vy*vy);
+
+	public double getSpeed() {
+		return (double) speed.getValue() / 30.0;
 	}
 }

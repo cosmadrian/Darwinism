@@ -39,11 +39,13 @@ public class MaleIndividual extends Individual {
 			}
 		}
 
-		g.drawImage(maleIcon, (int) (x - SIZE), (int) (y - SIZE), maleIcon.getWidth(), maleIcon.getHeight(),
-				null);
+		g.drawImage(maleIcon, (int) (x - SIZE), (int) (y - SIZE), maleIcon.getWidth(), maleIcon.getHeight(), null);
 
-		if (Main.DEBUG)
+		if (Main.DEBUG) {
 			g.drawOval((int) (x - LOS - SIZE / 2), (int) (y - LOS - SIZE / 2), 2 * LOS, 2 * LOS);
+			g.drawLine((int) (x - SIZE / 2), (int) (y - SIZE / 2), (int) (x + 10 * vx - SIZE / 2), (int) (y - SIZE / 2)); // vx
+			g.drawLine((int) (x - SIZE / 2), (int) (y - SIZE / 2), (int) (x - SIZE / 2), (int) (y + 10 * vy - SIZE / 2)); // vy
+		}
 	}
 
 	public void update() {
@@ -70,7 +72,7 @@ public class MaleIndividual extends Individual {
 		} else if (getState() == StateType.MOVING) {
 			maleIcon = Main.toBufferedImage(Main.TransformColorToColor(i, currentColor, MovingState.MALE));
 			currentColor = MovingState.MALE;
-			
+
 		} else {
 			maleIcon = Main.toBufferedImage(Main.TransformColorToColor(i, currentColor, State.MALE));
 			currentColor = State.MALE;

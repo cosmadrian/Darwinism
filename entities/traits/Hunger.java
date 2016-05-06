@@ -11,7 +11,7 @@ public class Hunger extends Trait implements ActionListener {
 
 	private Timer timer;
 	private int rate = 1000; // ms
-	private int STARVATION_RATE = 2;
+	private int STARVATION_RATE = 1;
 	private double K = 0.0;
 
 	public Hunger(Individual source) {

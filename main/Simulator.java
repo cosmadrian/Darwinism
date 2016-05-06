@@ -99,9 +99,10 @@ public class Simulator implements Runnable {
 		frame.addPanel(new StatPanel());
 
 		// EntityBuilder.getInstance().populate(50);
-		//EntityBuilder.getInstance().cookFood(50);
+		EntityBuilder.getInstance().cookFood(50);
 		EntityBuilder.getInstance().make(Entity.Type.MALE, new Point(200, 200), null);
-		EntityBuilder.getInstance().make(Entity.Type.FOOD, new Point(210, 210), null);
+		// EntityBuilder.getInstance().make(Entity.Type.FOOD, new Point(250,
+		// 250), null);
 		// EntityBuilder.getInstance().make(Entity.Type.MALE, new Point(220,
 		// 200), null);
 		// EntityBuilder.getInstance().make(Entity.Type.MALE, new Point(200,

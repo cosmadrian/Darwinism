@@ -7,6 +7,7 @@ import java.awt.event.ActionListener;
 import javax.swing.Timer;
 
 import entities.Individual;
+import entities.traits.Trait;
 
 public class MovingState extends State implements ActionListener {
 
@@ -18,25 +19,38 @@ public class MovingState extends State implements ActionListener {
 
 	public MovingState(Individual e) {
 		super(e);
-		/* TODO: rate depends on stamina */
-		timer = new Timer(1000, this);
-		timer.start();
+
+		timer = new Timer(0, this);
 	}
 
 	@Override
 	public void update() {
 
+		if (!timer.isRunning()) {
+			timer.start();
+			
+			double sP = ((double) (source.getTrait(Trait.Type.STAMINA).getValue() + 20) / 100.0);
+			timer.setInitialDelay((int) (500 * sP));
+		}
+
 		if (!set) {
 			source.setDirection(direction);
 			set = true;
 		}
-
 		weightedStates.clear();
-		weightedStates.put(new Tuple<StateType, Object>(StateType.IDLE, null), 0.0);
-		weightedStates.put(new Tuple<StateType, Object>(StateType.MOVING, null), 0.0);
-		weightedStates.put(new Tuple<StateType, Object>(StateType.EATING, null), 0.0);
+		foodDistances.clear();
+
+		Tuple<Double, Object> eating, moving, movingToEat;
+		getFoodDistances();
+		eating = getEatingTuple();
+		moving = getMovingTuple();
+
+		weightedStates.put(new Tuple<StateType, Object>(StateType.MOVING, moving.second), moving.first);
+		weightedStates.put(new Tuple<StateType, Object>(StateType.EATING, eating.second), eating.first);
+		weightedStates.put(new Tuple<StateType, Object>(StateType.IDLE, null), 1 - moving.first - eating.first);
 
 		nextState = super.getNextState(weightedStates);
+
 	}
 
 	@Override
@@ -50,14 +64,20 @@ public class MovingState extends State implements ActionListener {
 			return;
 		}
 
-		timer.stop();
-		source.setState(nextState.first, nextState.second);
+		if (nextState.first != StateType.MOVING) {
+			source.setState(nextState.first, nextState.second);
+			timer.stop();
+
+		} else {
+			double sP = ((double) (source.getTrait(Trait.Type.STAMINA).getValue() + 20) / 100.0);
+			timer.setDelay((int) (500 * sP));
+		}
 	}
 
 	@Override
 	public void clean() {
 		direction = 0.0;
-
+		set = false;
 	}
 
 	@Override

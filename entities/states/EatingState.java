@@ -22,7 +22,6 @@ public class EatingState extends State implements ActionListener {
 		super(individual);
 
 		timer = new Timer(1000, this);
-		timer.start();
 	}
 
 	@Override
@@ -31,7 +30,9 @@ public class EatingState extends State implements ActionListener {
 			timer.start();
 			return;
 		}
-
+		weightedStates.clear();
+		foodDistances.clear();
+		
 		double c = hungerProbability(source.getTrait(Trait.Type.HUNGER).getValue());
 		weightedStates.put(new Tuple<StateType, Object>(StateType.EATING, null), c);
 		weightedStates.put(new Tuple<StateType, Object>(StateType.IDLE, null), 1 - c);
@@ -49,6 +50,8 @@ public class EatingState extends State implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (foodSource == null) {
+			timer.stop();
+			source.setState(StateType.IDLE, null);
 			return;
 		}
 
@@ -59,7 +62,8 @@ public class EatingState extends State implements ActionListener {
 			foodSource = null;
 		}
 		
-		if (nextState.first != StateType.EATING) {
+		
+		if (nextState != null && nextState.first != StateType.EATING) {
 			timer.stop();
 			source.setState(nextState.first, nextState.second);
 		}
