@@ -157,7 +157,7 @@ public abstract class Individual extends Entity {
 	}
 
 	public void setDirection(double d) {
-		int s = speed.getValue() / 30;
+		double s = speed.getValue() / 30;
 		vx = ((double) s * Math.cos(d));
 		vy = ((double) s * Math.sin(d));
 	}

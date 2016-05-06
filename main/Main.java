@@ -64,7 +64,7 @@ public class Main {
 		ImageProducer ip = new FilteredImageSource(image.getSource(), filter);
 		return Toolkit.getDefaultToolkit().createImage(ip);
 	}
-	
+
 	public static Image TransformColorToColor(Image image, final Color targetColor, final Color endColor) {
 
 		ImageFilter filter = new RGBImageFilter() {
@@ -83,5 +83,5 @@ public class Main {
 		ImageProducer ip = new FilteredImageSource(image.getSource(), filter);
 		return Toolkit.getDefaultToolkit().createImage(ip);
 	}
-	
+
 }

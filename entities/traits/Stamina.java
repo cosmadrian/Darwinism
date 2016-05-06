@@ -28,21 +28,24 @@ public class Stamina extends Trait implements ActionListener {
 
 	@Override
 	public void update() {
-		if(this.value > 100){
+		if (this.value > 100) {
 			this.value = 100;
 		}
-		
-		if(this.value < 0){
+
+		if (this.value < 0) {
 			this.value = 0;
 		}
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		if(source.getState() == StateType.MOVING){
+		if (source.getState() == StateType.MOVING) {
 			this.value -= EXHAUSTION_RATE * (source.getTrait(Trait.Type.SPEED).getValue() / 100.0);
-		}else {
+		} else {
 			this.value += RECOVERY_RATE;
+			if (this.value > 100) {
+				this.value = 100;
+			}
 		}
 	}
 

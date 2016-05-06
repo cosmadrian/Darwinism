@@ -9,4 +9,9 @@ public class Tuple<A, B> {
 		this.first = a;
 		this.second = b;
 	}
+	
+	@Override
+	public String toString(){
+		return first.toString() + ", " + second.toString();
+	}
 }
