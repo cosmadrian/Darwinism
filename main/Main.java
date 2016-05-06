@@ -16,7 +16,7 @@ import javax.swing.UnsupportedLookAndFeelException;
 
 public class Main {
 
-	public static final boolean DEBUG = false;
+	public static final boolean DEBUG = true;
 
 	public static void main(String[] args) {
 
@@ -64,4 +64,24 @@ public class Main {
 		ImageProducer ip = new FilteredImageSource(image.getSource(), filter);
 		return Toolkit.getDefaultToolkit().createImage(ip);
 	}
+	
+	public static Image TransformColorToColor(Image image, final Color targetColor, final Color endColor) {
+
+		ImageFilter filter = new RGBImageFilter() {
+
+			public int markerRGB = targetColor.getRGB();
+
+			@Override
+			public int filterRGB(int x, int y, int rgb) {
+				if (rgb == markerRGB) { // alpha bits opaque
+					return endColor.getRGB(); // make alpha bits transparent
+				} else {
+					return rgb;
+				}
+			}
+		};
+		ImageProducer ip = new FilteredImageSource(image.getSource(), filter);
+		return Toolkit.getDefaultToolkit().createImage(ip);
+	}
+	
 }

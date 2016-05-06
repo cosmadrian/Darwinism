@@ -5,17 +5,21 @@ import java.awt.event.ActionListener;
 
 import javax.swing.Timer;
 
-public class Hunger extends Trait implements ActionListener{
+import entities.Individual;
+
+public class Hunger extends Trait implements ActionListener {
 
 	private Timer timer;
-	private int rate = 1000; //ms
-	
-	
-	public Hunger(){
-		timer = new Timer(rate,this);
+	private int rate = 1000; // ms
+	private int STARVATION_RATE = 2;
+	private double K = 0.0;
+
+	public Hunger(Individual source) {
+		super(source);
+		timer = new Timer(rate, this);
 		timer.start();
 	}
-	
+
 	@Override
 	public String getName() {
 		return "Hunger";
@@ -23,12 +27,15 @@ public class Hunger extends Trait implements ActionListener{
 
 	@Override
 	public void update() {
-		if(value == 0)
+		if (value == 0)
 			timer.stop();
+
+		K = (double) (50 - source.getTrait(Trait.Type.STAMINA).getValue()) / 100.0;
+
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		//this.value --;
+		this.value -= STARVATION_RATE * (1 + K);
 	}
 }

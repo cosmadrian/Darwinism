@@ -1,19 +1,44 @@
 package entities.states;
 
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import entities.Individual;
+import javax.swing.Timer;
 
-public class EatingState extends State implements ActionListener{
+import entities.Food;
+import entities.Individual;
+import entities.traits.Trait;
+
+public class EatingState extends State implements ActionListener {
+
+	public static final Color MALE = Color.black;
+	public static final Color FEMALE = Color.black;
+	private static final int EATING_RATE = 8;
+
+	private Food foodSource;
 
 	public EatingState(Individual individual) {
 		super(individual);
+
+		timer = new Timer(1000, this);
+		timer.start();
 	}
 
 	@Override
 	public void update() {
+		if (!timer.isRunning()) {
+			timer.start();
+			return;
+		}
 
+		double c = hungerProbability(source.getTrait(Trait.Type.HUNGER).getValue());
+		weightedStates.put(new Tuple<StateType, Object>(StateType.EATING, null), c);
+		weightedStates.put(new Tuple<StateType, Object>(StateType.IDLE, null), 1 - c);
+
+		nextState = State.getNextState(weightedStates);
+
+		
 	}
 
 	@Override
@@ -23,7 +48,39 @@ public class EatingState extends State implements ActionListener{
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
+		if (foodSource == null) {
+			return;
+		}
+
+		int val = source.getTrait(Trait.Type.HUNGER).getValue();
+		source.getTrait(Trait.Type.HUNGER).setValue(val + EATING_RATE);
+		foodSource.consume(EATING_RATE);
+		if(foodSource.getQuantity() <= 0){
+			foodSource = null;
+		}
 		
+		if (nextState.first != StateType.EATING) {
+			timer.stop();
+			source.setState(nextState.first, nextState.second);
+		}
 	}
 
+	public void setFoodSource(Food e) {
+		this.foodSource = e;
+	}
+
+	private double hungerProbability(double x) {
+		return Math.pow(2, -(x / 40));
+	}
+
+	@Override
+	public void clean() {
+		this.foodSource = null;
+	}
+
+	@Override
+	public State withOption(Object option) {
+		this.foodSource = (Food) option;
+		return this;
+	}
 }

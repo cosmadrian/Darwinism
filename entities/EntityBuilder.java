@@ -11,6 +11,8 @@ import main.Aggregator;
 public class EntityBuilder {
 
 	private static EntityBuilder instance = null;
+	public int foodCount = 0;
+	public int individualCount = 0;
 
 	public static EntityBuilder getInstance() {
 		if (instance == null) {
@@ -30,12 +32,15 @@ public class EntityBuilder {
 		switch (t) {
 		case MALE:
 			e = new MaleIndividual(d);
+			this.individualCount++;
 			break;
 		case FEMALE:
 			e = new FemaleIndividual(d);
+			this.individualCount++;
 			break;
 		case FOOD:
 			e = new Food(r.nextInt(Food.MAX_FOOD / 2) + Food.MAX_FOOD / 2);
+			this.foodCount++;
 			break;
 		}
 

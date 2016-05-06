@@ -26,4 +26,15 @@ public class CallingState extends State implements ActionListener{
 		
 	}
 
+	@Override
+	public void clean() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public State withOption(Object option) {
+		return this;
+	}
+
 }

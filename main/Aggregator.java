@@ -7,6 +7,9 @@ import java.awt.Rectangle;
 import java.util.ArrayList;
 
 import entities.Entity;
+import entities.EntityBuilder;
+import entities.Food;
+import entities.Individual;
 import map.Map;
 import map.MapGenerator;
 
@@ -32,7 +35,7 @@ public class Aggregator {
 
 	public void renderEntities(Graphics g) {
 		for (Entity e : entities) {
-			if(e.equals(selectedEntity)){
+			if (e.equals(selectedEntity)) {
 				g.setColor(Color.BLACK);
 				g.drawRect(e.getX() - 15, e.getY() - 15, 15, 15);
 			}
@@ -45,9 +48,18 @@ public class Aggregator {
 	}
 
 	public void updateEntities() {
-		for (Entity e : entities) {
-			e.update();
+
+		Object temp[] = entities.toArray();
+		int n = entities.size();
+
+		for (int i = 0; i < n; i++) {
+			((Entity) temp[i]).update();
 		}
+
+	}
+
+	public void updateMap() {
+		map.update();
 	}
 
 	public void setEntities(ArrayList<Entity> e) {
@@ -77,13 +89,21 @@ public class Aggregator {
 	}
 
 	public void kill(Entity e) {
-
 		e.die();
-		if (entities.remove(e)) {
-			// System.out.println("removed id" + e.id);
+		killNoDie(e);
+	}
+
+	public void killNoDie(Entity e) {
+
+		if (e instanceof Food) {
+			EntityBuilder.getInstance().foodCount--;
+		} else if (e instanceof Individual) {
+			EntityBuilder.getInstance().individualCount--;
 		}
 
-		if (selectedEntity.equals(e))
+		entities.remove(e);
+
+		if (selectedEntity != null && selectedEntity.equals(e))
 			selectedEntity = null;
 	}
 

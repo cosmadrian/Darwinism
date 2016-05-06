@@ -1,5 +1,5 @@
 package entities.states;
 
-public enum States {
+public enum StateType {
 	MOVING, IDLE, EATING, FIGHTING, MATING, CALLING, FLEEING
 }

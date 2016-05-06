@@ -17,7 +17,7 @@ public class Food extends Entity {
 	public static final int MAX_FOOD = 100;
 
 	private BufferedImage foodIcon;
-	private int xOffset = 11, yOffset = 11;
+	private static final int SIZE = 9;
 	private int quantity;
 
 	public Food(int i) {
@@ -25,7 +25,7 @@ public class Food extends Entity {
 
 		try {
 			foodIcon = Main.toBufferedImage(Main.TransformColorToTransparency(
-					ImageIO.read(new File("src/food.png")).getScaledInstance(11, 11, Image.SCALE_DEFAULT),
+					ImageIO.read(new File("src/food.png")).getScaledInstance(SIZE, SIZE, Image.SCALE_DEFAULT),
 					Color.green));
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -46,7 +46,7 @@ public class Food extends Entity {
 	}
 
 	public void render(Graphics g) {
-		g.drawImage(foodIcon, (int) (x - xOffset), (int) (y - yOffset), foodIcon.getWidth(), foodIcon.getHeight(),
+		g.drawImage(foodIcon, (int) (x - SIZE), (int) (y - SIZE), foodIcon.getWidth(), foodIcon.getHeight(),
 				null);
 	}
 
@@ -57,6 +57,7 @@ public class Food extends Entity {
 
 	@Override
 	public void update() {
+		super.update();
 		if (quantity <= 0)
 			Aggregator.getInstance().kill(this);
 	}

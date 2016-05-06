@@ -16,7 +16,7 @@ public abstract class Entity {
 	public int id;
 
 	protected int LOS = 70;
-	
+
 	protected ArrayList<Entity> cache = null;
 
 	public Entity() {
@@ -25,7 +25,7 @@ public abstract class Entity {
 	}
 
 	public int getX() {
-		return (int)x;
+		return (int) x;
 	}
 
 	public void setX(double x) {
@@ -33,7 +33,7 @@ public abstract class Entity {
 	}
 
 	public int getY() {
-		return (int)y;
+		return (int) y;
 	}
 
 	public void setY(int y) {
@@ -66,9 +66,9 @@ public abstract class Entity {
 	}
 
 	public ArrayList<Food> getNearbyFood() {
-		if(cache == null)
+		if (cache == null)
 			getNearbyEntities();
-		
+
 		ArrayList<Food> food = new ArrayList<Food>();
 		for (Entity e : cache) {
 			if (e instanceof Food)
@@ -79,9 +79,9 @@ public abstract class Entity {
 	}
 
 	public ArrayList<MaleIndividual> getNearbyMales() {
-		if(cache == null)
+		if (cache == null)
 			getNearbyEntities();
-		
+
 		ArrayList<MaleIndividual> males = new ArrayList<MaleIndividual>();
 
 		for (Entity e : cache) {
@@ -93,9 +93,9 @@ public abstract class Entity {
 	}
 
 	public ArrayList<FemaleIndividual> getNearbyFemales() {
-		if(cache == null)
+		if (cache == null)
 			getNearbyEntities();
-		
+
 		ArrayList<FemaleIndividual> females = new ArrayList<FemaleIndividual>();
 
 		for (Entity e : cache) {
@@ -108,12 +108,13 @@ public abstract class Entity {
 
 	public abstract void render(Graphics g);
 
-	public void update(){
+	public void update() {
 		this.cache = null;
 	}
 
 	public void die() {
-		EntityBuilder.getInstance().make(Entity.Type.FOOD, new Point((int)x, (int)y), null);
+		EntityBuilder.getInstance().make(Entity.Type.FOOD, new Point((int) x, (int) y), null);
+		Aggregator.getInstance().killNoDie(this);
 	}
 
 }

@@ -1,6 +1,7 @@
 package entities.traits;
 
 import entities.DNA;
+import entities.Individual;
 
 public class TraitBuilder {
 	private static TraitBuilder instance;
@@ -17,26 +18,26 @@ public class TraitBuilder {
 		return instance;
 	}
 
-	public Trait make(Trait.Type t, DNA d) {
+	public Trait make(Individual source, Trait.Type t, DNA d) {
 		Trait trait = null;
 		switch (t) {
 		case FERTILITY:
-			trait = new Fertility();
+			trait = new Fertility(source);
 			break;
 		case STAMINA:
-			trait = new Stamina();
+			trait = new Stamina(source);
 			break;
 		case HUNGER:
-			trait = new Hunger();
+			trait = new Hunger(source);
 			break;
 		case AGGRESSIVENESS:
-			trait = new Aggressiveness();
+			trait = new Aggressiveness(source);
 			break;
 		case COMBAT:
-			trait = new Combat();
+			trait = new Combat(source);
 			break;
 		case SPEED:
-			trait = new Speed();
+			trait = new Speed(source);
 			break;
 		}
 		trait.setValue(d.getTraitInfluence(t));

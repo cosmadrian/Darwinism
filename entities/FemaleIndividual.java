@@ -12,16 +12,24 @@ import java.util.Random;
 
 import javax.imageio.ImageIO;
 
+import entities.states.EatingState;
+import entities.states.FightingState;
+import entities.states.IdleState;
+import entities.states.MovingState;
+import entities.states.State;
+import entities.states.StateType;
 import main.Main;
 
 public class FemaleIndividual extends Individual {
 
+	private Color currentColor = Color.RED;
 	private BufferedImage femaleIcon = null;
-	private int xOffset = 13, yOffset = 13;
 	private boolean isPregnant = false;
 	private DNA childDNA;
 	private ArrayList<Individual> children = new ArrayList<Individual>();
-
+	private static final int SIZE = 11;
+	
+	
 	public FemaleIndividual(DNA d) {
 		super(d);
 	}
@@ -31,22 +39,57 @@ public class FemaleIndividual extends Individual {
 		if (femaleIcon == null) {
 			try {
 				femaleIcon = Main.toBufferedImage(Main.TransformColorToTransparency(
-						ImageIO.read(new File("src/female.png")).getScaledInstance(13, 13, Image.SCALE_DEFAULT),
+						ImageIO.read(new File("src/female.png")).getScaledInstance(SIZE, SIZE, Image.SCALE_DEFAULT),
 						Color.green));
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
 
-		g.drawImage(femaleIcon, (int) (x - xOffset), (int) (y - yOffset), femaleIcon.getWidth(), femaleIcon.getHeight(),
+		g.drawImage(femaleIcon, (int) (x - SIZE), (int) (y - SIZE), femaleIcon.getWidth(), femaleIcon.getHeight(),
 				null);
 
 		if (Main.DEBUG)
-			g.drawOval((int) (x - LOS - xOffset / 2), (int) (y - LOS - yOffset / 2), 2 * LOS, 2 * LOS);
+			g.drawOval((int) (x - LOS - SIZE / 2), (int) (y - LOS - SIZE / 2), 2 * LOS, 2 * LOS);
 	}
 
 	public void update() {
 		super.update();
+
+		if (femaleIcon == null) {
+			return;
+		}
+
+		Image i = femaleIcon.getScaledInstance(SIZE, SIZE, Image.SCALE_DEFAULT);
+
+		if (isPregnant) {
+			femaleIcon = Main.toBufferedImage(Main.TransformColorToColor(i, currentColor, Color.PINK));
+			currentColor = Color.PINK;
+
+			return;
+		}
+
+		if (getState() == StateType.EATING) {
+			femaleIcon = Main.toBufferedImage(Main.TransformColorToColor(i, currentColor, EatingState.FEMALE));
+			currentColor = EatingState.FEMALE;
+
+		} else if (getState() == StateType.FIGHTING) {
+			femaleIcon = Main.toBufferedImage(Main.TransformColorToColor(i, currentColor, FightingState.FEMALE));
+			currentColor = FightingState.FEMALE;
+
+		} else if (getState() == StateType.IDLE) {
+			femaleIcon = Main.toBufferedImage(Main.TransformColorToColor(i, currentColor, IdleState.FEMALE));
+			currentColor = IdleState.FEMALE;
+
+		} else if (getState() == StateType.MOVING) {
+			femaleIcon = Main.toBufferedImage(Main.TransformColorToColor(i, currentColor, MovingState.FEMALE));
+			currentColor = MovingState.FEMALE;
+
+		} else {
+			femaleIcon = Main.toBufferedImage(Main.TransformColorToColor(i, currentColor, State.FEMALE));
+			currentColor = State.FEMALE;
+		}
+
 	}
 
 	@Override
@@ -78,8 +121,8 @@ public class FemaleIndividual extends Individual {
 					new Point((int) x + (r.nextInt(20) - 10), (int) y + (r.nextInt(20) - 10)), childDNA);
 		}
 
-		d.setMother(this);
-		children.add(d);
+		// d.setMother(this);
+		// children.add(d);
 
 		childDNA = null;
 

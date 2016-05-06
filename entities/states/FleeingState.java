@@ -18,12 +18,23 @@ public class FleeingState extends State implements ActionListener {
 
 	@Override
 	public String getName() {
-		return null;
+		return "FLEEING";
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		
+	}
+
+	@Override
+	public void clean() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public State withOption(Object option) {
+		return this;
 	}
 
 }

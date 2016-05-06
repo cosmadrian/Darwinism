@@ -1,8 +1,10 @@
 package main;
 
 import java.awt.Graphics;
+import java.awt.Point;
 import java.awt.image.BufferStrategy;
 
+import entities.Entity;
 import entities.EntityBuilder;
 import frontend.MainFrame;
 import frontend.StatPanel;
@@ -72,6 +74,7 @@ public class Simulator implements Runnable {
 
 	public void update() {
 		Aggregator.getInstance().updateEntities();
+		Aggregator.getInstance().updateMap();
 	}
 
 	public void render() {
@@ -95,14 +98,14 @@ public class Simulator implements Runnable {
 		frame.setInputHandler(new UserInput());
 		frame.addPanel(new StatPanel());
 
-		EntityBuilder.getInstance().populate(50);
-		EntityBuilder.getInstance().cookFood(20);
-		// EntityBuilder.getInstance().make(Entity.Type.MALE, new
-		// Point(200,200), null);
-		// EntityBuilder.getInstance().make(Entity.Type.MALE, new
-		// Point(220,200), null);
-		// EntityBuilder.getInstance().make(Entity.Type.MALE, new
-		// Point(200,220), null);
+		// EntityBuilder.getInstance().populate(50);
+		//EntityBuilder.getInstance().cookFood(50);
+		EntityBuilder.getInstance().make(Entity.Type.MALE, new Point(200, 200), null);
+		EntityBuilder.getInstance().make(Entity.Type.FOOD, new Point(210, 210), null);
+		// EntityBuilder.getInstance().make(Entity.Type.MALE, new Point(220,
+		// 200), null);
+		// EntityBuilder.getInstance().make(Entity.Type.MALE, new Point(200,
+		// 220), null);
 
 	}
 

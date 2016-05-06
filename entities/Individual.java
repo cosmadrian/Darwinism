@@ -11,7 +11,7 @@ import entities.states.IdleState;
 import entities.states.MatingState;
 import entities.states.MovingState;
 import entities.states.State;
-import entities.states.States;
+import entities.states.StateType;
 import entities.traits.Trait;
 import entities.traits.TraitBuilder;
 import frontend.MainFrame;
@@ -26,19 +26,21 @@ public abstract class Individual extends Entity {
 
 	private DNA dna;
 	private State state;
+	private StateType stateType;
 	private MaleIndividual father = null;
 	private FemaleIndividual mother = null;
+	public static final int RANGE = 18;
 
 	private double vx, vy;
 
 	public Individual(DNA d) {
 		this.dna = d;
-		traits.add((aggressiveness = TraitBuilder.getInstance().make(Trait.Type.AGGRESSIVENESS, d)));
-		traits.add(combat = TraitBuilder.getInstance().make(Trait.Type.COMBAT, d));
-		traits.add(fertility = TraitBuilder.getInstance().make(Trait.Type.FERTILITY, d));
-		traits.add(hunger = TraitBuilder.getInstance().make(Trait.Type.HUNGER, d));
-		traits.add(speed = TraitBuilder.getInstance().make(Trait.Type.SPEED, d));
-		traits.add(stamina = TraitBuilder.getInstance().make(Trait.Type.STAMINA, d));
+		traits.add((aggressiveness = TraitBuilder.getInstance().make(this, Trait.Type.AGGRESSIVENESS, d)));
+		traits.add(combat = TraitBuilder.getInstance().make(this, Trait.Type.COMBAT, d));
+		traits.add(fertility = TraitBuilder.getInstance().make(this, Trait.Type.FERTILITY, d));
+		traits.add(hunger = TraitBuilder.getInstance().make(this, Trait.Type.HUNGER, d));
+		traits.add(speed = TraitBuilder.getInstance().make(this, Trait.Type.SPEED, d));
+		traits.add(stamina = TraitBuilder.getInstance().make(this, Trait.Type.STAMINA, d));
 
 		idleState = new IdleState(this);
 		movingState = new MovingState(this);
@@ -49,6 +51,7 @@ public abstract class Individual extends Entity {
 		fleeingState = new FleeingState(this);
 
 		this.state = idleState;
+		this.stateType = StateType.IDLE;
 	}
 
 	public void render(Graphics g) {
@@ -56,6 +59,7 @@ public abstract class Individual extends Entity {
 	}
 
 	public void update() {
+		super.update();
 		for (Trait t : traits) {
 			t.update();
 		}
@@ -68,11 +72,15 @@ public abstract class Individual extends Entity {
 
 		state.update();
 
-		if (this.hunger.getValue() == 0)
+		if (this.hunger.getValue() <= 0)
 			this.die();
 	}
 
-	public void setState(States t) {
+	public void setState(StateType t, Object option) {
+		this.stateType = t;
+		
+		this.state.clean();
+		
 		switch (t) {
 		case MOVING:
 			this.state = movingState;
@@ -96,6 +104,8 @@ public abstract class Individual extends Entity {
 			this.state = fleeingState;
 			break;
 		}
+		
+		state.withOption(option);
 	}
 
 	public Trait getTrait(Trait.Type t) {
@@ -115,6 +125,10 @@ public abstract class Individual extends Entity {
 		}
 
 		return null;
+	}
+	
+	public StateType getState(){
+		return this.stateType;
 	}
 
 	@Override
@@ -154,5 +168,9 @@ public abstract class Individual extends Entity {
 
 	public void setVy(double vy) {
 		this.vy = vy;
+	}
+	
+	public double getSpeed(){
+		return Math.sqrt(vx*vx + vy*vy);
 	}
 }

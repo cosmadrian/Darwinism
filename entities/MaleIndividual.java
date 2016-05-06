@@ -9,12 +9,19 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
+import entities.states.EatingState;
+import entities.states.FightingState;
+import entities.states.IdleState;
+import entities.states.MovingState;
+import entities.states.State;
+import entities.states.StateType;
 import main.Main;
 
 public class MaleIndividual extends Individual {
 
 	private BufferedImage maleIcon = null;
-	private int xOffset = 15, yOffset = 15;
+	private Color currentColor = Color.BLUE;
+	private static final int SIZE = 13;
 
 	public MaleIndividual(DNA d) {
 		super(d);
@@ -25,22 +32,50 @@ public class MaleIndividual extends Individual {
 		if (maleIcon == null) {
 			try {
 				maleIcon = Main.toBufferedImage(Main.TransformColorToTransparency(
-						ImageIO.read(new File("src/male.png")).getScaledInstance(15, 15, Image.SCALE_DEFAULT),
+						ImageIO.read(new File("src/male.png")).getScaledInstance(SIZE, SIZE, Image.SCALE_DEFAULT),
 						Color.green));
-
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
-		g.drawImage(maleIcon, (int) (x - xOffset), (int) (y - yOffset), maleIcon.getWidth(), maleIcon.getHeight(),
+
+		g.drawImage(maleIcon, (int) (x - SIZE), (int) (y - SIZE), maleIcon.getWidth(), maleIcon.getHeight(),
 				null);
 
 		if (Main.DEBUG)
-			g.drawOval((int) (x - LOS - xOffset / 2), (int) (y - LOS - yOffset / 2), 2 * LOS, 2 * LOS);
+			g.drawOval((int) (x - LOS - SIZE / 2), (int) (y - LOS - SIZE / 2), 2 * LOS, 2 * LOS);
 	}
 
 	public void update() {
 		super.update();
+
+		if (maleIcon == null) {
+			return;
+		}
+
+		Image i = maleIcon.getScaledInstance(SIZE, SIZE, Image.SCALE_DEFAULT);
+
+		if (getState() == StateType.EATING) {
+			maleIcon = Main.toBufferedImage(Main.TransformColorToColor(i, currentColor, EatingState.MALE));
+			currentColor = EatingState.MALE;
+
+		} else if (getState() == StateType.FIGHTING) {
+			maleIcon = Main.toBufferedImage(Main.TransformColorToColor(i, currentColor, FightingState.MALE));
+			currentColor = FightingState.MALE;
+
+		} else if (getState() == StateType.IDLE) {
+			maleIcon = Main.toBufferedImage(Main.TransformColorToColor(i, currentColor, IdleState.MALE));
+			currentColor = IdleState.MALE;
+
+		} else if (getState() == StateType.MOVING) {
+			maleIcon = Main.toBufferedImage(Main.TransformColorToColor(i, currentColor, MovingState.MALE));
+			currentColor = MovingState.MALE;
+			
+		} else {
+			maleIcon = Main.toBufferedImage(Main.TransformColorToColor(i, currentColor, State.MALE));
+			currentColor = State.MALE;
+		}
+
 	}
 
 	@Override
