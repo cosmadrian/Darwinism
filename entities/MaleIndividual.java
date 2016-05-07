@@ -29,8 +29,10 @@ public class MaleIndividual extends Individual {
 	}
 
 	public void render(Graphics g) {
+		g.setColor(Color.blue);
 		super.render(g);
-		
+		g.setColor(Color.black);
+
 		if (maleIcon == null) {
 			try {
 				maleIcon = Main.toBufferedImage(Main.TransformColorToTransparency(
@@ -82,4 +84,22 @@ public class MaleIndividual extends Individual {
 		return x;
 	}
 
+	@Override
+	public void signal(MaleIndividual e) {
+		if (super.enemies.containsKey(e)) {
+			enemies.remove(e);
+		}
+
+		enemies.put(e, System.currentTimeMillis());
+
+	}
+
+	@Override
+	public void signal(FemaleIndividual e) {
+		if (super.mates.containsKey(e)) {
+			mates.remove(e);
+		}
+
+		mates.put(e, System.currentTimeMillis());
+	}
 }

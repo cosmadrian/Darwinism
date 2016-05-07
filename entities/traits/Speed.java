@@ -28,6 +28,9 @@ public class Speed extends Trait {
 		
 
 		this.value = (int) ((1 + hP) * (1 + sP) * baseValue);
+		if(this.value > 100){
+			this.value = 100;
+		}
 	}
 
 }

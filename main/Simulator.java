@@ -1,7 +1,6 @@
 package main;
 
 import java.awt.Graphics;
-import java.awt.Point;
 import java.awt.image.BufferStrategy;
 
 import entities.Entity;
@@ -98,16 +97,11 @@ public class Simulator implements Runnable {
 		frame.setInputHandler(new UserInput());
 		frame.addPanel(new StatPanel());
 
-		// EntityBuilder.getInstance().populate(50);
 		EntityBuilder.getInstance().cookFood(50);
-		EntityBuilder.getInstance().make(Entity.Type.MALE, new Point(200, 200), null);
-		EntityBuilder.getInstance().make(Entity.Type.FEMALE, new Point(220, 220), null);
-		// EntityBuilder.getInstance().make(Entity.Type.FOOD, new Point(250,
-		// 250), null);
-		// EntityBuilder.getInstance().make(Entity.Type.MALE, new Point(220,
-		// 200), null);
-		// EntityBuilder.getInstance().make(Entity.Type.MALE, new Point(200,
-		// 220), null);
+		EntityBuilder.getInstance().make(Entity.Type.MALE, null, null);
+		EntityBuilder.getInstance().make(Entity.Type.MALE, null, null);
+		EntityBuilder.getInstance().make(Entity.Type.FEMALE, null, null);
+		EntityBuilder.getInstance().make(Entity.Type.FEMALE, null, null);
 
 	}
 

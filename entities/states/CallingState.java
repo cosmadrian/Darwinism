@@ -5,7 +5,9 @@ import java.awt.event.ActionListener;
 
 import javax.swing.Timer;
 
+import entities.FemaleIndividual;
 import entities.Individual;
+import entities.MaleIndividual;
 import entities.traits.Trait;
 
 public class CallingState extends State implements ActionListener {
@@ -21,14 +23,19 @@ public class CallingState extends State implements ActionListener {
 			double fP = ((double) (source.getTrait(Trait.Type.FERTILITY).getValue()) / 100.0);
 			double sP = ((double) (source.getTrait(Trait.Type.STAMINA).getValue()) / 100.0);
 
-			timer.setInitialDelay((int) (1000 * (1 + sP) * (1 + fP)));
+			timer.setInitialDelay((int) (500 * (1 + sP) * (1 + fP)));
 			timer.start();
 		}
-		
-		for(Individual ind : source.getNearbyIndividuals()){
-			ind.signal(source);
+
+		for (Individual ind : source.getNearbyIndividuals(Individual.MATE_CALL_RANGE)) {
+			
+			if (source instanceof MaleIndividual) {
+				ind.signal((MaleIndividual) source);
+			} else if (source instanceof FemaleIndividual) {
+				ind.signal((FemaleIndividual) source);
+			}
 		}
-		
+
 	}
 
 	@Override

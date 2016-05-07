@@ -77,7 +77,7 @@ public abstract class State {
 	}
 
 	protected void getFoodDistances() {
-		ArrayList<Food> foods = source.getNearbyFood();
+		ArrayList<Food> foods = source.getNearbyFood(Individual.LOS);
 		for (Food f : foods) {
 			foodDistances.add(new Tuple<Double, Food>(
 					Math.sqrt(Math.pow(source.getX() - f.getX(), 2) + Math.pow(source.getY() - f.getY(), 2)), f));
@@ -132,21 +132,35 @@ public abstract class State {
 		}
 
 		double hungerChance = (double) (100 - source.getTrait(Trait.Type.HUNGER).getValue()) / 100.0;
-		double direction = getAngleBetween(new Point(source.getX(), source.getY()),
-				new Point(closestFood.getX(), closestFood.getY()));
-
-		double distance = foodDistances.peek().first;
-		double time = (distance / source.getSpeed()) * 16.6;
-
-		movingToEat = new Tuple<Double, Object>(hungerChance, new Tuple<Double, Integer>(direction, (int) time));
+		movingToEat = new Tuple<Double, Object>(hungerChance, closestFood);
 
 		return movingToEat;
 	}
 
 	protected Tuple<Double, Object> getCallingTuple() {
-		double callingChance = (double) (source.getTrait(Trait.Type.FERTILITY).getValue()) / 100.0;
+		double callingChance = (double) (source.getTrait(Trait.Type.FERTILITY).getValue()) / 150.0;
 
 		return new Tuple<Double, Object>(callingChance, null);
+	}
+
+	protected Tuple<Double, Object> getMovingToMateTuple() {
+		double matingChance = (double) (source.getTrait(Trait.Type.FERTILITY).getValue()) / 100.0;
+
+		ArrayList<Individual> mates = source.getPotentialMates();
+		int maxFertility = Integer.MIN_VALUE;
+		Individual target = null;
+
+		if (mates.size() == 0) {
+			return new Tuple<Double, Object>(0.0, null);
+		}
+
+		for (Individual i : mates) {
+			if (maxFertility < i.getTrait(Trait.Type.FERTILITY).getValue()) {
+				maxFertility = i.getTrait(Trait.Type.FERTILITY).getValue();
+				target = i;
+			}
+		}
+		return new Tuple<Double, Object>(matingChance, target);
 	}
 
 	protected double getAngleBetween(Point p1, Point p2) {

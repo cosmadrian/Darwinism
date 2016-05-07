@@ -40,16 +40,22 @@ public class MovingState extends State implements ActionListener {
 		weightedStates.clear();
 		foodDistances.clear();
 
-		Tuple<Double, Object> eating, moving, movingToEat;
+		Tuple<Double, Object> eating, moving, movingToMate;
 		getFoodDistances();
 		eating = getEatingTuple();
 		moving = getMovingTuple();
+		movingToMate = getMovingToMateTuple();
 
 		weightedStates.put(new Tuple<StateType, Object>(StateType.MOVING, moving.second), moving.first);
 		weightedStates.put(new Tuple<StateType, Object>(StateType.EATING, eating.second), eating.first);
-		weightedStates.put(new Tuple<StateType, Object>(StateType.IDLE, null), 1 - moving.first - eating.first);
+		weightedStates.put(new Tuple<StateType, Object>(StateType.MOVING_WITH_GOAL, movingToMate.second), movingToMate.first);
+		weightedStates.put(new Tuple<StateType, Object>(StateType.IDLE, null), 1 - moving.first);
 
 		nextState = super.getNextState(weightedStates);
+		
+		if(nextState.first == StateType.MOVING_WITH_GOAL){
+			actionPerformed(null);
+		}
 
 	}
 

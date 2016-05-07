@@ -1,22 +1,25 @@
 package entities.states;
 
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.Timer;
 
+import entities.Entity;
 import entities.Individual;
 
 public class GoalMoveState extends State implements ActionListener {
 
 	private double direction;
-	private int time;
+	private Entity target;
+	private boolean set = false;
+	private static final int TIMEOUT = 3000;
+	private long startTime;
 
-	private boolean set = false; 
-	
 	public GoalMoveState(Individual e) {
 		super(e);
-		timer = new Timer(0, this);
+		timer = new Timer(100, this);
 
 		nextState = new Tuple<StateType, Object>(StateType.IDLE, null);
 	}
@@ -24,14 +27,13 @@ public class GoalMoveState extends State implements ActionListener {
 	@Override
 	public void update() {
 		if (!timer.isRunning()) {
-			timer.setInitialDelay(time);
 			timer.start();
+			startTime = System.currentTimeMillis();
+			direction = super.getAngleBetween(new Point(source.getX(), source.getY()),
+					new Point(target.getX(), target.getY()));
 		}
-		
-		if(!set){
-			source.setDirection(direction);
-			set = true;
-		}
+
+		source.setDirection(direction);
 
 	}
 
@@ -39,14 +41,13 @@ public class GoalMoveState extends State implements ActionListener {
 	public void clean() {
 		set = false;
 		direction = 0.0;
-		time = 0;
+		target = null;
+		startTime = 0;
 	}
 
 	@Override
 	public State withOption(Object option) {
-		Tuple<Double, Integer> o = (Tuple<Double, Integer>) option;
-		direction = o.first;
-		time = o.second;
+		this.target = (Entity) option;
 		return this;
 	}
 
@@ -57,11 +58,21 @@ public class GoalMoveState extends State implements ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if (nextState == null) {
+
+		double distanceToTarget = Math
+				.sqrt(Math.pow(source.getX() - target.getX(), 2) + Math.pow(source.getY() - target.getY(), 2));
+
+		long interval = System.currentTimeMillis() - startTime;
+
+		if (distanceToTarget > Individual.MATE_CALL_RANGE || distanceToTarget <= Individual.RANGE || interval > TIMEOUT) {
+			timer.stop();
+			source.setState(nextState.first, nextState.second);
 			return;
 		}
-		timer.stop();
-		source.setState(nextState.first, nextState.second);
+
+		direction = super.getAngleBetween(new Point(source.getX(), source.getY()),
+				new Point(target.getX(), target.getY()));
+
 	}
 
 }

@@ -48,9 +48,9 @@ public abstract class Entity {
 		return this;
 	}
 
-	public ArrayList<Individual> getNearbyIndividuals() {
+	public ArrayList<Individual> getNearbyIndividuals(int radius) {
 		if (cache == null)
-			getNearbyEntities();
+			getNearbyEntities(radius);
 
 		ArrayList<Individual> individuals = new ArrayList<Individual>();
 		for (Entity e : cache) {
@@ -62,14 +62,14 @@ public abstract class Entity {
 		return individuals;
 	}
 
-	private void getNearbyEntities() {
+	private void getNearbyEntities(int radius) {
 		ArrayList<Entity> entities = new ArrayList<Entity>();
 
 		for (Entity e : Aggregator.getInstance().getEntities()) {
 			int x2 = e.getX();
 			int y2 = e.getY();
 
-			if (!e.equals(this) && Math.sqrt(Math.pow(x - x2, 2) + Math.pow(y - y2, 2)) < Individual.LOS) {
+			if (!e.equals(this) && Math.sqrt(Math.pow(x - x2, 2) + Math.pow(y - y2, 2)) < radius) {
 				entities.add(e);
 			}
 		}
@@ -77,9 +77,9 @@ public abstract class Entity {
 		this.cache = entities;
 	}
 
-	public ArrayList<Food> getNearbyFood() {
+	public ArrayList<Food> getNearbyFood(int radius) {
 		if (cache == null)
-			getNearbyEntities();
+			getNearbyEntities(radius);
 
 		ArrayList<Food> food = new ArrayList<Food>();
 		for (Entity e : cache) {
@@ -90,9 +90,9 @@ public abstract class Entity {
 		return food;
 	}
 
-	public ArrayList<MaleIndividual> getNearbyMales() {
+	public ArrayList<MaleIndividual> getNearbyMales(int radius) {
 		if (cache == null)
-			getNearbyEntities();
+			getNearbyEntities(radius);
 
 		ArrayList<MaleIndividual> males = new ArrayList<MaleIndividual>();
 
@@ -104,9 +104,9 @@ public abstract class Entity {
 		return males;
 	}
 
-	public ArrayList<FemaleIndividual> getNearbyFemales() {
+	public ArrayList<FemaleIndividual> getNearbyFemales(int radius) {
 		if (cache == null)
-			getNearbyEntities();
+			getNearbyEntities(radius);
 
 		ArrayList<FemaleIndividual> females = new ArrayList<FemaleIndividual>();
 

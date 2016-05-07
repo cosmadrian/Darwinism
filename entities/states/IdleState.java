@@ -32,19 +32,22 @@ public class IdleState extends State implements ActionListener {
 		weightedStates.clear();
 		foodDistances.clear();
 
-		Tuple<Double, Object> eating, calling, moving, movingToEat;
+		Tuple<Double, Object> eating, calling, moving, movingToEat, movingToMate;
 		getFoodDistances();
 		eating = getEatingTuple();
 		moving = getMovingTuple();
 		calling = getCallingTuple();
 		movingToEat = getMovingToEatTuple();
+		movingToMate = getMovingToMateTuple();
 
 		weightedStates.put(new Tuple<StateType, Object>(StateType.EATING, eating.second), eating.first);
 		weightedStates.put(new Tuple<StateType, Object>(StateType.MOVING_WITH_GOAL, movingToEat.second),
 				movingToEat.first);
+		weightedStates.put(new Tuple<StateType, Object>(StateType.MOVING_WITH_GOAL, movingToMate.second),
+				movingToMate.first);
 		weightedStates.put(new Tuple<StateType, Object>(StateType.MOVING, moving.second), moving.first);
 		weightedStates.put(new Tuple<StateType, Object>(StateType.CALLING, calling.second), calling.first);
-		weightedStates.put(new Tuple<StateType, Object>(StateType.IDLE, null), 0.5);
+		weightedStates.put(new Tuple<StateType, Object>(StateType.IDLE, null), 1 - moving.first);
 
 		nextState = super.getNextState(weightedStates);
 

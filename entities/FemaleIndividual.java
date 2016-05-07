@@ -3,12 +3,9 @@ package entities;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
-import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Random;
 
 import javax.imageio.ImageIO;
 
@@ -26,16 +23,20 @@ public class FemaleIndividual extends Individual {
 	private BufferedImage femaleIcon = null;
 	private boolean isPregnant = false;
 	private DNA childDNA;
-	private ArrayList<Individual> children = new ArrayList<Individual>();
 	private static final int SIZE = 11;
 
+	private GestationHandler gestationHandler;
+	
 	public FemaleIndividual(DNA d) {
 		super(d);
+		gestationHandler = new GestationHandler(this);
 	}
 
 	public void render(Graphics g) {
+		g.setColor(Color.red);
 		super.render(g);
-		
+		g.setColor(Color.black);
+
 		if (femaleIcon == null) {
 			try {
 				femaleIcon = Main.toBufferedImage(Main.TransformColorToTransparency(
@@ -98,31 +99,32 @@ public class FemaleIndividual extends Individual {
 	public boolean isPregnant() {
 		return isPregnant;
 	}
+	
+	public void cancelPregnancy(){
+		this.isPregnant = false;
+	}
 
 	public void impregnate(DNA d) {
 		isPregnant = true;
-		this.childDNA = d;
+		gestationHandler.impregnate(d);
 	}
 
-	public Individual takeBirth() {
-		isPregnant = false;
-
-		Random r = new Random();
-		Individual d = null;
-
-		if (childDNA.getGender() == Entity.Type.MALE) {
-			d = (Individual) EntityBuilder.getInstance().make(Entity.Type.MALE,
-					new Point((int) x + (r.nextInt(20) - 10), (int) y + (r.nextInt(20) - 10)), childDNA);
-		} else if (childDNA.getGender() == Entity.Type.FEMALE) {
-			d = (Individual) EntityBuilder.getInstance().make(Entity.Type.FEMALE,
-					new Point((int) x + (r.nextInt(20) - 10), (int) y + (r.nextInt(20) - 10)), childDNA);
+	@Override
+	public void signal(MaleIndividual e) {
+		if (super.mates.containsKey(e)) {
+			mates.remove(e);
 		}
 
-		// d.setMother(this);
-		// children.add(d);
-
-		childDNA = null;
-
-		return d;
+		mates.put(e, System.currentTimeMillis());
 	}
+
+	@Override
+	public void signal(FemaleIndividual e) {
+		if (super.enemies.containsKey(e)) {
+			enemies.remove(e);
+		}
+
+		enemies.put(e, System.currentTimeMillis());
+	}
+
 }

@@ -26,27 +26,28 @@ public abstract class Individual extends Entity {
 
 	public static final int LOS = 70;
 	public static final int RANGE = 15;
-	public static final int MATE_TIMEOUT = 3000; // 3 seconds
+	public static final int MATE_TIMEOUT = 2000; // 2 seconds
+	public static final int MATE_CALL_RANGE = 100;
+
+	protected Map<Individual, Long> mates = new HashMap<Individual, Long>();
+	protected Map<Individual, Long> enemies = new HashMap<Individual, Long>();
 
 	private State idleState, movingState, eatingState, matingState, callingState, fightingState, fleeingState,
 			movingWithGoal;
 
 	private Trait aggressiveness, combat, fertility, hunger, speed, stamina;
 	private ArrayList<Trait> traits = new ArrayList<Trait>();
-	private Map<Individual, Long> potentialMates = new HashMap<Individual, Long>();
 
 	private DNA dna;
 	private State state;
 	private StateType stateType;
-	private MaleIndividual father = null;
-	private FemaleIndividual mother = null;
 
 	protected double vx;
 	protected double vy;
 
 	public Individual(DNA d) {
 
-		this.dna = d;
+		this.setDNA(d);
 		traits.add((aggressiveness = TraitBuilder.getInstance().make(this, Trait.Type.AGGRESSIVENESS, d)));
 		traits.add(combat = TraitBuilder.getInstance().make(this, Trait.Type.COMBAT, d));
 		traits.add(fertility = TraitBuilder.getInstance().make(this, Trait.Type.FERTILITY, d));
@@ -71,7 +72,8 @@ public abstract class Individual extends Entity {
 		final int SIZE = 10;
 
 		if (getState() == StateType.CALLING) {
-			g.drawOval((int) (x - LOS - SIZE / 2), (int) (y - LOS - SIZE / 2), 2 * LOS, 2 * LOS);
+			g.drawOval((int) (x - MATE_CALL_RANGE - SIZE / 2), (int) (y - MATE_CALL_RANGE - SIZE / 2),
+					2 * MATE_CALL_RANGE, 2 * MATE_CALL_RANGE);
 		}
 
 		if (Main.DEBUG) {
@@ -100,21 +102,11 @@ public abstract class Individual extends Entity {
 		x += vx;
 		y += vy;
 
-		updatePotentialMates();
+		updateMates();
 		state.update();
 
 		if (this.hunger.getValue() <= 0)
 			this.die();
-	}
-
-	private void updatePotentialMates() {
-		Iterator<Individual> iter = potentialMates.keySet().iterator();
-		while (iter.hasNext()) {
-			Individual e = iter.next();
-			if (System.currentTimeMillis() - potentialMates.get(e) > MATE_TIMEOUT) {
-				iter.remove();
-			}
-		}
 	}
 
 	public void setState(StateType t, Object option) {
@@ -181,14 +173,19 @@ public abstract class Individual extends Entity {
 		for (Trait t : traits) {
 			x += "* " + t.getName() + ": " + t.getValue() + "\n";
 		}
-		x += "\nNearby Food: " + this.getNearbyFood().size() + "\n";
-		x += "Nearby Females: " + this.getNearbyFemales().size() + "\n";
-		x += "Nearby Males: " + this.getNearbyMales().size() + "\n";
+		x += "\nNearby Food: " + this.getNearbyFood(LOS).size() + "\n";
+		x += "Nearby Females: " + this.getNearbyFemales(LOS).size() + "\n";
+		x += "Nearby Males: " + this.getNearbyMales(LOS).size() + "\n";
 		x += "Potential Mates: ";
-		for (Individual e : potentialMates.keySet()) {
+		for (Individual e : mates.keySet()) {
 			x += e.id + ",";
 		}
-
+		x = x.substring(0, x.length() - 1);
+		x += "\n";
+		x += "Potential Enemies: ";
+		for (Individual e : enemies.keySet()) {
+			x += e.id + ",";
+		}
 		x = x.substring(0, x.length() - 1);
 		x += "\n";
 		x += "\nState: " + state.getName() + "\n";
@@ -196,20 +193,12 @@ public abstract class Individual extends Entity {
 		return x;
 	}
 
-	public void setMother(FemaleIndividual f) {
-		this.mother = f;
-	}
-
-	public void setFather(MaleIndividual m) {
-		this.father = m;
-	}
-
 	public void die() {
 		super.die();
 	}
 
 	public void setDirection(double d) {
-		double s = (double) speed.getValue() / 30.0;
+		double s = (double) speed.getValue() / 50.0;
 		vx = ((double) s * Math.cos(d));
 		vy = ((double) s * Math.sin(d));
 
@@ -227,12 +216,45 @@ public abstract class Individual extends Entity {
 		return (double) speed.getValue() / 30.0;
 	}
 
-	public void signal(Individual e) {
-		if (potentialMates.containsKey(e)) {
-			potentialMates.remove(e);
+	private void updateMates() {
+		Iterator<Individual> iter = mates.keySet().iterator();
+		while (iter.hasNext()) {
+			Individual e = iter.next();
+			if (System.currentTimeMillis() - mates.get(e) > MATE_TIMEOUT) {
+				iter.remove();
+			}
 		}
+		iter = enemies.keySet().iterator();
+		while (iter.hasNext()) {
+			Individual e = iter.next();
+			if (System.currentTimeMillis() - enemies.get(e) > MATE_TIMEOUT) {
+				iter.remove();
+			}
+		}
+	}
 
-		potentialMates.put(e, System.currentTimeMillis());
+	public abstract void signal(MaleIndividual e);
+
+	public abstract void signal(FemaleIndividual e);
+
+	public ArrayList<Individual> getPotentialMates() {
+		ArrayList<Individual> x = new ArrayList<Individual>();
+		x.addAll(mates.keySet());
+		return x;
+	}
+
+	public ArrayList<Individual> getPotentialEnemies() {
+		ArrayList<Individual> x = new ArrayList<Individual>();
+		x.addAll(enemies.keySet());
+		return x;
+	}
+
+	public DNA getDNA() {
+		return dna;
+	}
+
+	public void setDNA(DNA dna) {
+		this.dna = dna;
 	}
 
 }

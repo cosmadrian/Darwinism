@@ -109,11 +109,11 @@ public class DNA {
 		}
 	}
 
-	public String getStrand() {
+	private String getStrand() {
 		return this.strand;
 	}
 
-	public static int bitSum(char c) {
+	private static int bitSum(char c) {
 		int sum = 0;
 		for (int i = 0; i < 8; i++) {
 			sum += getBit(c, i);
@@ -122,7 +122,7 @@ public class DNA {
 		return sum;
 	}
 
-	public static int getBit(char c, int position) {
+	private static int getBit(char c, int position) {
 		return (c >> position) & 1;
 	}
 }
