@@ -8,10 +8,9 @@ import entities.Individual;
 
 public class FightingState extends State implements ActionListener {
 
-	public static final Color MALE = new Color(0x7E14FF);
-	public static final Color FEMALE = new Color(0xDE0030);
-	
-	
+	public static final Color MALE = new Color(0x002696); // albastru inchis
+	public static final Color FEMALE = new Color(0x8F001F); // rosu inchis
+
 	public FightingState(Individual individual) {
 		super(individual);
 	}
@@ -29,13 +28,13 @@ public class FightingState extends State implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void clean() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override

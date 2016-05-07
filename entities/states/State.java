@@ -143,6 +143,12 @@ public abstract class State {
 		return movingToEat;
 	}
 
+	protected Tuple<Double, Object> getCallingTuple() {
+		double callingChance = (double) (source.getTrait(Trait.Type.FERTILITY).getValue()) / 100.0;
+
+		return new Tuple<Double, Object>(callingChance, null);
+	}
+
 	protected double getAngleBetween(Point p1, Point p2) {
 		double angle = (double) Math.atan2(p1.x - p2.x, p2.y - p1.y) + Math.PI / 2;
 		return angle;

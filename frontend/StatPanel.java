@@ -34,7 +34,7 @@ public class StatPanel extends JPanel implements ActionListener{
 
 		this.add(killButton);
 		killButton.setVisible(true);
-		killButton.setBounds(20, HEIGHT - 100, 80, 30);
+		killButton.setBounds(20, HEIGHT - 50, 80, 30);
 		killButton.addActionListener(this);
 
 		this.add(text);

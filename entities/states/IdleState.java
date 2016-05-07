@@ -23,27 +23,28 @@ public class IdleState extends State implements ActionListener {
 	@Override
 	public void update() {
 		if (!timer.isRunning()) {
-			timer.start();
-
 			double sP = ((double) (150 - source.getTrait(Trait.Type.STAMINA).getValue()) / 100.0);
-			timer.setInitialDelay((int) (1000 * sP));
+			timer.setInitialDelay((int) (500 * sP));
 
+			timer.start();
 		}
 
 		weightedStates.clear();
 		foodDistances.clear();
 
-		Tuple<Double, Object> eating, moving, movingToEat;
+		Tuple<Double, Object> eating, calling, moving, movingToEat;
 		getFoodDistances();
 		eating = getEatingTuple();
 		moving = getMovingTuple();
+		calling = getCallingTuple();
 		movingToEat = getMovingToEatTuple();
 
 		weightedStates.put(new Tuple<StateType, Object>(StateType.EATING, eating.second), eating.first);
 		weightedStates.put(new Tuple<StateType, Object>(StateType.MOVING_WITH_GOAL, movingToEat.second),
 				movingToEat.first);
 		weightedStates.put(new Tuple<StateType, Object>(StateType.MOVING, moving.second), moving.first);
-		weightedStates.put(new Tuple<StateType, Object>(StateType.IDLE, null), 1 - eating.first - moving.first);
+		weightedStates.put(new Tuple<StateType, Object>(StateType.CALLING, calling.second), calling.first);
+		weightedStates.put(new Tuple<StateType, Object>(StateType.IDLE, null), 0.5);
 
 		nextState = super.getNextState(weightedStates);
 
@@ -62,7 +63,7 @@ public class IdleState extends State implements ActionListener {
 			timer.stop();
 		} else {
 			double sP = ((double) (150 - source.getTrait(Trait.Type.STAMINA).getValue()) / 100.0);
-			timer.setDelay((int) (1000 * sP));
+			timer.setDelay((int) (500 * sP));
 		}
 	}
 

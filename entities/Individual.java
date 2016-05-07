@@ -2,6 +2,9 @@ package entities;
 
 import java.awt.Graphics;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 import entities.states.CallingState;
 import entities.states.EatingState;
@@ -17,27 +20,32 @@ import entities.traits.Trait;
 import entities.traits.TraitBuilder;
 import frontend.MainFrame;
 import frontend.StatPanel;
+import main.Main;
 
 public abstract class Individual extends Entity {
+
+	public static final int LOS = 70;
+	public static final int RANGE = 15;
+	public static final int MATE_TIMEOUT = 3000; // 3 seconds
 
 	private State idleState, movingState, eatingState, matingState, callingState, fightingState, fleeingState,
 			movingWithGoal;
 
 	private Trait aggressiveness, combat, fertility, hunger, speed, stamina;
 	private ArrayList<Trait> traits = new ArrayList<Trait>();
+	private Map<Individual, Long> potentialMates = new HashMap<Individual, Long>();
 
 	private DNA dna;
 	private State state;
 	private StateType stateType;
 	private MaleIndividual father = null;
 	private FemaleIndividual mother = null;
-	public static final int RANGE = 18;
 
 	protected double vx;
-
 	protected double vy;
 
 	public Individual(DNA d) {
+
 		this.dna = d;
 		traits.add((aggressiveness = TraitBuilder.getInstance().make(this, Trait.Type.AGGRESSIVENESS, d)));
 		traits.add(combat = TraitBuilder.getInstance().make(this, Trait.Type.COMBAT, d));
@@ -60,7 +68,16 @@ public abstract class Individual extends Entity {
 	}
 
 	public void render(Graphics g) {
+		final int SIZE = 10;
 
+		if (getState() == StateType.CALLING) {
+			g.drawOval((int) (x - LOS - SIZE / 2), (int) (y - LOS - SIZE / 2), 2 * LOS, 2 * LOS);
+		}
+
+		if (Main.DEBUG) {
+			g.drawOval((int) (x - LOS - SIZE / 2), (int) (y - LOS - SIZE / 2), 2 * LOS, 2 * LOS);
+			g.drawOval((int) (x - RANGE - SIZE / 2), (int) (y - RANGE - SIZE / 2), 2 * RANGE, 2 * RANGE);
+		}
 	}
 
 	public void update() {
@@ -83,10 +100,21 @@ public abstract class Individual extends Entity {
 		x += vx;
 		y += vy;
 
+		updatePotentialMates();
 		state.update();
 
 		if (this.hunger.getValue() <= 0)
 			this.die();
+	}
+
+	private void updatePotentialMates() {
+		Iterator<Individual> iter = potentialMates.keySet().iterator();
+		while (iter.hasNext()) {
+			Individual e = iter.next();
+			if (System.currentTimeMillis() - potentialMates.get(e) > MATE_TIMEOUT) {
+				iter.remove();
+			}
+		}
 	}
 
 	public void setState(StateType t, Object option) {
@@ -156,7 +184,15 @@ public abstract class Individual extends Entity {
 		x += "\nNearby Food: " + this.getNearbyFood().size() + "\n";
 		x += "Nearby Females: " + this.getNearbyFemales().size() + "\n";
 		x += "Nearby Males: " + this.getNearbyMales().size() + "\n";
+		x += "Potential Mates: ";
+		for (Individual e : potentialMates.keySet()) {
+			x += e.id + ",";
+		}
+
+		x = x.substring(0, x.length() - 1);
+		x += "\n";
 		x += "\nState: " + state.getName() + "\n";
+
 		return x;
 	}
 
@@ -190,4 +226,13 @@ public abstract class Individual extends Entity {
 	public double getSpeed() {
 		return (double) speed.getValue() / 30.0;
 	}
+
+	public void signal(Individual e) {
+		if (potentialMates.containsKey(e)) {
+			potentialMates.remove(e);
+		}
+
+		potentialMates.put(e, System.currentTimeMillis());
+	}
+
 }

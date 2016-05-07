@@ -29,6 +29,8 @@ public class MaleIndividual extends Individual {
 	}
 
 	public void render(Graphics g) {
+		super.render(g);
+		
 		if (maleIcon == null) {
 			try {
 				maleIcon = Main.toBufferedImage(Main.TransformColorToTransparency(
@@ -40,12 +42,6 @@ public class MaleIndividual extends Individual {
 		}
 
 		g.drawImage(maleIcon, (int) (x - SIZE), (int) (y - SIZE), maleIcon.getWidth(), maleIcon.getHeight(), null);
-
-		if (Main.DEBUG) {
-			g.drawOval((int) (x - LOS - SIZE / 2), (int) (y - LOS - SIZE / 2), 2 * LOS, 2 * LOS);
-			g.drawLine((int) (x - SIZE / 2), (int) (y - SIZE / 2), (int) (x + 10 * vx - SIZE / 2), (int) (y - SIZE / 2)); // vx
-			g.drawLine((int) (x - SIZE / 2), (int) (y - SIZE / 2), (int) (x - SIZE / 2), (int) (y + 10 * vy - SIZE / 2)); // vy
-		}
 	}
 
 	public void update() {
@@ -69,7 +65,7 @@ public class MaleIndividual extends Individual {
 			maleIcon = Main.toBufferedImage(Main.TransformColorToColor(i, currentColor, IdleState.MALE));
 			currentColor = IdleState.MALE;
 
-		} else if (getState() == StateType.MOVING) {
+		} else if (getState() == StateType.MOVING || getState() == StateType.MOVING_WITH_GOAL) {
 			maleIcon = Main.toBufferedImage(Main.TransformColorToColor(i, currentColor, MovingState.MALE));
 			currentColor = MovingState.MALE;
 

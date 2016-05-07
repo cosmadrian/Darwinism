@@ -28,14 +28,14 @@ public class FemaleIndividual extends Individual {
 	private DNA childDNA;
 	private ArrayList<Individual> children = new ArrayList<Individual>();
 	private static final int SIZE = 11;
-	
-	
+
 	public FemaleIndividual(DNA d) {
 		super(d);
 	}
 
 	public void render(Graphics g) {
-
+		super.render(g);
+		
 		if (femaleIcon == null) {
 			try {
 				femaleIcon = Main.toBufferedImage(Main.TransformColorToTransparency(
@@ -48,9 +48,6 @@ public class FemaleIndividual extends Individual {
 
 		g.drawImage(femaleIcon, (int) (x - SIZE), (int) (y - SIZE), femaleIcon.getWidth(), femaleIcon.getHeight(),
 				null);
-
-		if (Main.DEBUG)
-			g.drawOval((int) (x - LOS - SIZE / 2), (int) (y - LOS - SIZE / 2), 2 * LOS, 2 * LOS);
 	}
 
 	public void update() {
@@ -81,7 +78,7 @@ public class FemaleIndividual extends Individual {
 			femaleIcon = Main.toBufferedImage(Main.TransformColorToColor(i, currentColor, IdleState.FEMALE));
 			currentColor = IdleState.FEMALE;
 
-		} else if (getState() == StateType.MOVING) {
+		} else if (getState() == StateType.MOVING || getState() == StateType.MOVING_WITH_GOAL) {
 			femaleIcon = Main.toBufferedImage(Main.TransformColorToColor(i, currentColor, MovingState.FEMALE));
 			currentColor = MovingState.FEMALE;
 

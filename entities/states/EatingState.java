@@ -12,8 +12,8 @@ import entities.traits.Trait;
 
 public class EatingState extends State implements ActionListener {
 
-	public static final Color MALE = Color.black;
-	public static final Color FEMALE = Color.black;
+	public static final Color MALE = new Color(0x828282); // 
+	public static final Color FEMALE = new Color(0x828282); // gray
 	private static final int EATING_RATE = 8;
 
 	private Food foodSource;
@@ -32,14 +32,13 @@ public class EatingState extends State implements ActionListener {
 		}
 		weightedStates.clear();
 		foodDistances.clear();
-		
+
 		double c = hungerProbability(source.getTrait(Trait.Type.HUNGER).getValue());
 		weightedStates.put(new Tuple<StateType, Object>(StateType.EATING, null), c);
 		weightedStates.put(new Tuple<StateType, Object>(StateType.IDLE, null), 1 - c);
 
 		nextState = State.getNextState(weightedStates);
 
-		
 	}
 
 	@Override
@@ -58,11 +57,10 @@ public class EatingState extends State implements ActionListener {
 		int val = source.getTrait(Trait.Type.HUNGER).getValue();
 		source.getTrait(Trait.Type.HUNGER).setValue(val + EATING_RATE);
 		foodSource.consume(EATING_RATE);
-		if(foodSource.getQuantity() <= 0){
+		if (foodSource.getQuantity() <= 0) {
 			foodSource = null;
 		}
-		
-		
+
 		if (nextState != null && nextState.first != StateType.EATING) {
 			timer.stop();
 			source.setState(nextState.first, nextState.second);

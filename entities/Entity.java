@@ -15,8 +15,6 @@ public abstract class Entity {
 	protected double x, y;
 	public int id;
 
-	protected int LOS = 70;
-
 	protected ArrayList<Entity> cache = null;
 
 	public Entity() {
@@ -50,6 +48,20 @@ public abstract class Entity {
 		return this;
 	}
 
+	public ArrayList<Individual> getNearbyIndividuals() {
+		if (cache == null)
+			getNearbyEntities();
+
+		ArrayList<Individual> individuals = new ArrayList<Individual>();
+		for (Entity e : cache) {
+			if (e instanceof Individual) {
+				individuals.add((Individual) e);
+			}
+		}
+
+		return individuals;
+	}
+
 	private void getNearbyEntities() {
 		ArrayList<Entity> entities = new ArrayList<Entity>();
 
@@ -57,7 +69,7 @@ public abstract class Entity {
 			int x2 = e.getX();
 			int y2 = e.getY();
 
-			if (!e.equals(this) && Math.sqrt(Math.pow(x - x2, 2) + Math.pow(y - y2, 2)) < LOS) {
+			if (!e.equals(this) && Math.sqrt(Math.pow(x - x2, 2) + Math.pow(y - y2, 2)) < Individual.LOS) {
 				entities.add(e);
 			}
 		}
