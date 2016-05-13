@@ -46,7 +46,7 @@ public class Food extends Entity {
 	}
 
 	public void render(Graphics g) {
-		g.drawImage(foodIcon, (int) (x - SIZE), (int) (y - SIZE), foodIcon.getWidth(), foodIcon.getHeight(),
+		g.drawImage(foodIcon, (int) (x - SIZE / 2), (int) (y - SIZE / 2), foodIcon.getWidth(), foodIcon.getHeight(),
 				null);
 	}
 

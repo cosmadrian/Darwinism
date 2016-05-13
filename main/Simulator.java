@@ -100,9 +100,9 @@ public class Simulator implements Runnable {
 		EntityBuilder.getInstance().cookFood(50);
 		EntityBuilder.getInstance().make(Entity.Type.MALE, null, null);
 		EntityBuilder.getInstance().make(Entity.Type.MALE, null, null);
+		EntityBuilder.getInstance().make(Entity.Type.MALE, null, null);
 		EntityBuilder.getInstance().make(Entity.Type.FEMALE, null, null);
 		EntityBuilder.getInstance().make(Entity.Type.FEMALE, null, null);
-
 	}
 
 }

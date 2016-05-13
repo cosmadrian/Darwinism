@@ -41,9 +41,11 @@ public class MaleIndividual extends Individual {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-		}
 
-		g.drawImage(maleIcon, (int) (x - SIZE), (int) (y - SIZE), maleIcon.getWidth(), maleIcon.getHeight(), null);
+		}
+		g.drawImage(maleIcon, (int) (x - SIZE / 2), (int) (y - SIZE / 2), maleIcon.getWidth(), maleIcon.getHeight(),
+				null);
+
 	}
 
 	public void update() {
@@ -101,5 +103,9 @@ public class MaleIndividual extends Individual {
 		}
 
 		mates.put(e, System.currentTimeMillis());
+	}
+
+	public void die() {
+		super.die();
 	}
 }

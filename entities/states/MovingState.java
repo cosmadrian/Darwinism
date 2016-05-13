@@ -82,6 +82,7 @@ public class MovingState extends State implements ActionListener {
 
 	@Override
 	public void clean() {
+		super.clean();
 		direction = 0.0;
 		set = false;
 	}

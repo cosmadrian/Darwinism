@@ -29,8 +29,9 @@ public class GoalMoveState extends State implements ActionListener {
 		if (!timer.isRunning()) {
 			timer.start();
 			startTime = System.currentTimeMillis();
-			direction = super.getAngleBetween(new Point(source.getX(), source.getY()),
-					new Point(target.getX(), target.getY()));
+			if (target != null)
+				direction = super.getAngleBetween(new Point(source.getX(), source.getY()),
+						new Point(target.getX(), target.getY()));
 		}
 
 		source.setDirection(direction);
@@ -39,6 +40,7 @@ public class GoalMoveState extends State implements ActionListener {
 
 	@Override
 	public void clean() {
+		super.clean();
 		set = false;
 		direction = 0.0;
 		target = null;
@@ -64,7 +66,8 @@ public class GoalMoveState extends State implements ActionListener {
 
 		long interval = System.currentTimeMillis() - startTime;
 
-		if (distanceToTarget > Individual.MATE_CALL_RANGE || distanceToTarget <= Individual.RANGE || interval > TIMEOUT) {
+		if (distanceToTarget > Individual.MATE_CALL_RANGE || distanceToTarget <= Individual.RANGE
+				|| interval > TIMEOUT) {
 			timer.stop();
 			source.setState(nextState.first, nextState.second);
 			return;

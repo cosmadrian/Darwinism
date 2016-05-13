@@ -49,7 +49,9 @@ public abstract class State {
 
 	public abstract void update();
 
-	public abstract void clean();
+	public void clean(){
+		timer.stop();
+	}
 
 	public abstract State withOption(Object option);
 
@@ -138,7 +140,7 @@ public abstract class State {
 	}
 
 	protected Tuple<Double, Object> getCallingTuple() {
-		double callingChance = (double) (source.getTrait(Trait.Type.FERTILITY).getValue()) / 150.0;
+		double callingChance = (double) (source.getTrait(Trait.Type.FERTILITY).getValue()) / 200.0;
 
 		return new Tuple<Double, Object>(callingChance, null);
 	}

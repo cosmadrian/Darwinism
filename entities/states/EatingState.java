@@ -77,6 +77,7 @@ public class EatingState extends State implements ActionListener {
 
 	@Override
 	public void clean() {
+		super.clean();
 		this.foodSource = null;
 	}
 

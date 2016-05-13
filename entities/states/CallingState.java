@@ -51,6 +51,7 @@ public class CallingState extends State implements ActionListener {
 
 	@Override
 	public void clean() {
+		super.clean();
 	}
 
 	@Override

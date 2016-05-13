@@ -72,6 +72,7 @@ public class IdleState extends State implements ActionListener {
 
 	@Override
 	public void clean() {
+		super.clean();
 		weightedStates.clear();
 	}
 

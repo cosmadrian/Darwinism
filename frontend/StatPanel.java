@@ -9,10 +9,13 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import entities.DNA;
 import entities.Entity;
+import entities.FemaleIndividual;
+import exceptions.AlreadyPregnantException;
 import main.Aggregator;
 
-public class StatPanel extends JPanel implements ActionListener{
+public class StatPanel extends JPanel implements ActionListener {
 
 	private static final long serialVersionUID = -7815061674620254354L;
 
@@ -21,6 +24,7 @@ public class StatPanel extends JPanel implements ActionListener{
 
 	private JLabel text = new JLabel();
 	private JButton killButton = new JButton("Kill");
+	private JButton impregnateButton = new JButton("Impregnate");
 
 	public StatPanel() {
 		init();
@@ -33,9 +37,14 @@ public class StatPanel extends JPanel implements ActionListener{
 		this.setLayout(null);
 
 		this.add(killButton);
-		killButton.setVisible(true);
-		killButton.setBounds(20, HEIGHT - 50, 80, 30);
+		killButton.setVisible(false);
+		killButton.setBounds(20, HEIGHT - 50, 100, 30);
 		killButton.addActionListener(this);
+
+		this.add(impregnateButton);
+		impregnateButton.setVisible(false);
+		impregnateButton.setBounds(20, HEIGHT - 50 - 40, 100, 30);
+		impregnateButton.addActionListener(this);
 
 		this.add(text);
 		text.setVisible(true);
@@ -54,12 +63,35 @@ public class StatPanel extends JPanel implements ActionListener{
 		String formatted = "<html>" + getStats().replace("\n", "<br>") + "</html>";
 
 		text.setText(formatted);
+
+		if (Aggregator.getInstance().selectedEntity != null) {
+			this.killButton.setVisible(true);
+			if (Aggregator.getInstance().selectedEntity instanceof FemaleIndividual) {
+				this.impregnateButton.setVisible(true);
+			} else {
+				this.impregnateButton.setVisible(false);
+			}
+		} else {
+			this.killButton.setVisible(false);
+			this.impregnateButton.setVisible(false);
+		}
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if(Aggregator.getInstance().selectedEntity != null){
-			Aggregator.getInstance().kill(Aggregator.getInstance().selectedEntity);
+		if (e.getSource().equals(killButton)) {
+			if (Aggregator.getInstance().selectedEntity != null) {
+				Aggregator.getInstance().kill(Aggregator.getInstance().selectedEntity);
+			}
+		} else if (e.getSource().equals(impregnateButton)) {
+			if (Aggregator.getInstance().selectedEntity != null) {
+				try {
+					((FemaleIndividual) Aggregator.getInstance().selectedEntity)
+							.impregnate(new DNA(DNA.generateStrand()));
+				} catch (AlreadyPregnantException ex) {
+					ex.printStackTrace();
+				}
+			}
 		}
 	}
 

@@ -22,7 +22,7 @@ import frontend.MainFrame;
 import frontend.StatPanel;
 import main.Main;
 
-public abstract class Individual extends Entity {
+public abstract class Individual extends Entity  {
 
 	public static final int LOS = 70;
 	public static final int RANGE = 15;
@@ -79,7 +79,12 @@ public abstract class Individual extends Entity {
 		if (Main.DEBUG) {
 			g.drawOval((int) (x - LOS - SIZE / 2), (int) (y - LOS - SIZE / 2), 2 * LOS, 2 * LOS);
 			g.drawOval((int) (x - RANGE - SIZE / 2), (int) (y - RANGE - SIZE / 2), 2 * RANGE, 2 * RANGE);
+		
+			g.drawRect((int) this.getBox().getX(), (int) this.getBox().getY(), (int) this.getBox().getWidth(),
+					(int) this.getBox().getHeight());
+
 		}
+		
 	}
 
 	public void update() {
@@ -99,8 +104,9 @@ public abstract class Individual extends Entity {
 		if (y + vy < 10 || y + vy > MainFrame.HEIGHT - 10) {
 			vy = -vy;
 		}
-		x += vx;
-		y += vy;
+		
+		setX(x+vx);
+		setY(y+vy);
 
 		updateMates();
 		state.update();
@@ -110,6 +116,15 @@ public abstract class Individual extends Entity {
 	}
 
 	public void setState(StateType t, Object option) {
+		if(this instanceof FemaleIndividual){
+			if(((FemaleIndividual)this).isPregnant()){
+				if(t == StateType.CALLING || t == StateType.MATING){
+					this.setState(StateType.IDLE, null);
+					return;
+				}
+			}
+		}
+		
 		this.stateType = t;
 
 		this.state.clean();

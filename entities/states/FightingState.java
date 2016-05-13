@@ -33,7 +33,7 @@ public class FightingState extends State implements ActionListener {
 
 	@Override
 	public void clean() {
-		// TODO Auto-generated method stub
+		super.clean();
 
 	}
 

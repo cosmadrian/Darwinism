@@ -15,6 +15,7 @@ import entities.states.IdleState;
 import entities.states.MovingState;
 import entities.states.State;
 import entities.states.StateType;
+import exceptions.AlreadyPregnantException;
 import main.Main;
 
 public class FemaleIndividual extends Individual {
@@ -26,7 +27,7 @@ public class FemaleIndividual extends Individual {
 	private static final int SIZE = 11;
 
 	private GestationHandler gestationHandler;
-	
+
 	public FemaleIndividual(DNA d) {
 		super(d);
 		gestationHandler = new GestationHandler(this);
@@ -47,8 +48,8 @@ public class FemaleIndividual extends Individual {
 			}
 		}
 
-		g.drawImage(femaleIcon, (int) (x - SIZE), (int) (y - SIZE), femaleIcon.getWidth(), femaleIcon.getHeight(),
-				null);
+		g.drawImage(femaleIcon, (int) (x - SIZE / 2), (int) (y - SIZE / 2), femaleIcon.getWidth(),
+				femaleIcon.getHeight(), null);
 	}
 
 	public void update() {
@@ -61,8 +62,8 @@ public class FemaleIndividual extends Individual {
 		Image i = femaleIcon.getScaledInstance(SIZE, SIZE, Image.SCALE_DEFAULT);
 
 		if (isPregnant) {
-			femaleIcon = Main.toBufferedImage(Main.TransformColorToColor(i, currentColor, Color.PINK));
-			currentColor = Color.PINK;
+			femaleIcon = Main.toBufferedImage(Main.TransformColorToColor(i, currentColor, Color.CYAN));
+			currentColor = Color.CYAN;
 
 			return;
 		}
@@ -99,12 +100,15 @@ public class FemaleIndividual extends Individual {
 	public boolean isPregnant() {
 		return isPregnant;
 	}
-	
-	public void cancelPregnancy(){
+
+	public void cancelPregnancy() {
 		this.isPregnant = false;
 	}
 
-	public void impregnate(DNA d) {
+	public void impregnate(DNA d) throws AlreadyPregnantException {
+		if (isPregnant) {
+			throw new AlreadyPregnantException("This female is already in pain!");
+		}
 		isPregnant = true;
 		gestationHandler.impregnate(d);
 	}
@@ -125,6 +129,11 @@ public class FemaleIndividual extends Individual {
 		}
 
 		enemies.put(e, System.currentTimeMillis());
+	}
+
+	public void die() {
+		super.die();
+		gestationHandler.stop();
 	}
 
 }

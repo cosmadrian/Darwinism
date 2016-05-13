@@ -64,4 +64,8 @@ public class GestationHandler implements ActionListener {
 		female.cancelPregnancy();
 	}
 
+	public void stop() {
+		this.timer.stop();
+	}
+
 }

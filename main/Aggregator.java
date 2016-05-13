@@ -37,7 +37,7 @@ public class Aggregator {
 		for (Entity e : entities) {
 			if (e.equals(selectedEntity)) {
 				g.setColor(Color.BLACK);
-				g.drawRect(e.getX() - 15, e.getY() - 15, 15, 15);
+				g.drawRect(e.getX() - 7, e.getY() - 7, 15, 15);
 			}
 			e.render(g);
 		}
@@ -53,9 +53,11 @@ public class Aggregator {
 		int n = entities.size();
 
 		for (int i = 0; i < n; i++) {
-			((Entity) temp[i]).update();
-		}
+			Entity workingEntity = (Entity) temp[i];
 
+			workingEntity.update();
+
+		}
 	}
 
 	public void updateMap() {
@@ -79,8 +81,9 @@ public class Aggregator {
 	}
 
 	public Entity getEntityByPosition(Point p) {
+
 		int xOffset = 20, yOffset = 20;
-		Rectangle r = new Rectangle((int) p.getX(), (int) p.getY(), xOffset, yOffset);
+		Rectangle r = new Rectangle((int) (p.getX() - xOffset / 2), (int) (p.getY() - yOffset / 2), xOffset, yOffset);
 		for (Entity e : entities) {
 			if (r.contains(e.getX(), e.getY()))
 				return e;
@@ -90,11 +93,6 @@ public class Aggregator {
 
 	public void kill(Entity e) {
 		e.die();
-		killNoDie(e);
-	}
-
-	public void killNoDie(Entity e) {
-
 		if (e instanceof Food) {
 			EntityBuilder.getInstance().foodCount--;
 		} else if (e instanceof Individual) {

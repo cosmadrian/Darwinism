@@ -2,6 +2,7 @@ package entities;
 
 import java.awt.Graphics;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.util.ArrayList;
 
 import main.Aggregator;
@@ -11,15 +12,19 @@ public abstract class Entity {
 		FOOD, MALE, FEMALE
 	};
 
+	public static final int BOX_SIZE = 20;
+
 	protected static int COUNT = 0;
 	protected double x, y;
 	public int id;
+	protected Rectangle box;
 
 	protected ArrayList<Entity> cache = null;
 
 	public Entity() {
 		COUNT++;
 		this.id = COUNT;
+		this.box = new Rectangle(0, 0, BOX_SIZE, BOX_SIZE);
 	}
 
 	public int getX() {
@@ -34,17 +39,17 @@ public abstract class Entity {
 		return (int) y;
 	}
 
-	public void setY(int y) {
+	public void setY(double y) {
 		this.y = y;
 	}
 
-	public Entity withX(int x) {
-		this.x = x;
+	public Entity withX(double x) {
+		setX(x);
 		return this;
 	}
 
-	public Entity withY(int y) {
-		this.y = y;
+	public Entity withY(double y) {
+		setY(y);
 		return this;
 	}
 
@@ -121,12 +126,16 @@ public abstract class Entity {
 	public abstract void render(Graphics g);
 
 	public void update() {
-		this.cache = null;
+		cache = null;
+		box.setBounds((int) (x - BOX_SIZE / 2), (int) (y - BOX_SIZE / 2), BOX_SIZE, BOX_SIZE);
 	}
 
 	public void die() {
 		EntityBuilder.getInstance().make(Entity.Type.FOOD, new Point((int) x, (int) y), null);
-		Aggregator.getInstance().killNoDie(this);
+	}
+
+	public Rectangle getBox() {
+		return this.box;
 	}
 
 }
