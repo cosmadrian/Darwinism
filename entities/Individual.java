@@ -6,23 +6,15 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import entities.states.CallingState;
-import entities.states.EatingState;
-import entities.states.FightingState;
-import entities.states.FleeingState;
-import entities.states.GoalMoveState;
-import entities.states.IdleState;
-import entities.states.MatingState;
-import entities.states.MovingState;
-import entities.states.State;
+import entities.states.StateHandler;
 import entities.states.StateType;
 import entities.traits.Trait;
-import entities.traits.TraitBuilder;
+import entities.traits.TraitHandler;
 import frontend.MainFrame;
 import frontend.StatPanel;
 import main.Main;
 
-public abstract class Individual extends Entity  {
+public abstract class Individual extends Entity {
 
 	public static final int LOS = 70;
 	public static final int RANGE = 15;
@@ -32,15 +24,10 @@ public abstract class Individual extends Entity  {
 	protected Map<Individual, Long> mates = new HashMap<Individual, Long>();
 	protected Map<Individual, Long> enemies = new HashMap<Individual, Long>();
 
-	private State idleState, movingState, eatingState, matingState, callingState, fightingState, fleeingState,
-			movingWithGoal;
-
-	private Trait aggressiveness, combat, fertility, hunger, speed, stamina;
-	private ArrayList<Trait> traits = new ArrayList<Trait>();
+	private TraitHandler traitHandler;
+	private StateHandler stateHandler;
 
 	private DNA dna;
-	private State state;
-	private StateType stateType;
 
 	protected double vx;
 	protected double vy;
@@ -48,25 +35,10 @@ public abstract class Individual extends Entity  {
 	public Individual(DNA d) {
 
 		this.setDNA(d);
-		traits.add((aggressiveness = TraitBuilder.getInstance().make(this, Trait.Type.AGGRESSIVENESS, d)));
-		traits.add(combat = TraitBuilder.getInstance().make(this, Trait.Type.COMBAT, d));
-		traits.add(fertility = TraitBuilder.getInstance().make(this, Trait.Type.FERTILITY, d));
-		traits.add(hunger = TraitBuilder.getInstance().make(this, Trait.Type.HUNGER, d));
-		traits.add(speed = TraitBuilder.getInstance().make(this, Trait.Type.SPEED, d));
-		traits.add(stamina = TraitBuilder.getInstance().make(this, Trait.Type.STAMINA, d));
-
-		idleState = new IdleState(this);
-		movingState = new MovingState(this);
-		eatingState = new EatingState(this);
-		matingState = new MatingState(this);
-		callingState = new CallingState(this);
-		fightingState = new FightingState(this);
-		fleeingState = new FleeingState(this);
-		movingWithGoal = new GoalMoveState(this);
-
-		this.state = idleState;
-		this.stateType = StateType.IDLE;
+		traitHandler = new TraitHandler(this);
+		stateHandler = new StateHandler(this);
 	}
+
 
 	public void render(Graphics g) {
 		final int SIZE = 10;
@@ -79,21 +51,21 @@ public abstract class Individual extends Entity  {
 		if (Main.DEBUG) {
 			g.drawOval((int) (x - LOS - SIZE / 2), (int) (y - LOS - SIZE / 2), 2 * LOS, 2 * LOS);
 			g.drawOval((int) (x - RANGE - SIZE / 2), (int) (y - RANGE - SIZE / 2), 2 * RANGE, 2 * RANGE);
-		
+
 			g.drawRect((int) this.getBox().getX(), (int) this.getBox().getY(), (int) this.getBox().getWidth(),
 					(int) this.getBox().getHeight());
 
 		}
-		
+
 	}
 
 	public void update() {
 		super.update();
-		for (Trait t : traits) {
-			t.update();
-		}
 
-		if (stateType != StateType.MOVING && stateType != StateType.MOVING_WITH_GOAL) {
+		traitHandler.update();
+		stateHandler.update();
+
+		if (stateHandler.getStateType() != StateType.MOVING && stateHandler.getStateType() != StateType.MOVING_WITH_GOAL) {
 			vx = 0;
 			vy = 0;
 		}
@@ -104,88 +76,33 @@ public abstract class Individual extends Entity  {
 		if (y + vy < 10 || y + vy > MainFrame.HEIGHT - 10) {
 			vy = -vy;
 		}
-		
-		setX(x+vx);
-		setY(y+vy);
+
+		setX(x + vx);
+		setY(y + vy);
 
 		updateMates();
-		state.update();
 
-		if (this.hunger.getValue() <= 0)
+		if (traitHandler.get(Trait.Type.HUNGER).getValue() <= 0)
 			this.die();
 	}
 
 	public void setState(StateType t, Object option) {
-		if(this instanceof FemaleIndividual){
-			if(((FemaleIndividual)this).isPregnant()){
-				if(t == StateType.CALLING || t == StateType.MATING){
-					this.setState(StateType.IDLE, null);
-					return;
-				}
-			}
-		}
-		
-		this.stateType = t;
-
-		this.state.clean();
-
-		switch (t) {
-		case MOVING:
-			this.state = movingState;
-			break;
-		case EATING:
-			this.state = eatingState;
-			break;
-		case MATING:
-			this.state = matingState;
-			break;
-		case CALLING:
-			this.state = callingState;
-			break;
-		case FIGHTING:
-			this.state = fightingState;
-			break;
-		case IDLE:
-			this.state = idleState;
-			break;
-		case FLEEING:
-			this.state = fleeingState;
-			break;
-		case MOVING_WITH_GOAL:
-			this.state = movingWithGoal;
-			break;
-		}
-
-		state.withOption(option);
+		stateHandler.setState(t,option);
 	}
 
 	public Trait getTrait(Trait.Type t) {
-		switch (t) {
-		case AGGRESSIVENESS:
-			return aggressiveness;
-		case COMBAT:
-			return combat;
-		case FERTILITY:
-			return fertility;
-		case HUNGER:
-			return hunger;
-		case SPEED:
-			return speed;
-		case STAMINA:
-			return stamina;
-		}
+		return traitHandler.get(t);
 
-		return null;
 	}
 
 	public StateType getState() {
-		return this.stateType;
+		return stateHandler.getStateType();
 	}
 
 	@Override
 	public String toString() {
 		String x = "ID: " + this.id + "\n";
-		for (Trait t : traits) {
+		for (Trait t : traitHandler.getTraits()) {
 			x += "* " + t.getName() + ": " + t.getValue() + "\n";
 		}
 		x += "\nNearby Food: " + this.getNearbyFood(LOS).size() + "\n";
@@ -203,7 +120,7 @@ public abstract class Individual extends Entity  {
 		}
 		x = x.substring(0, x.length() - 1);
 		x += "\n";
-		x += "\nState: " + state.getName() + "\n";
+		x += "\nState: " + stateHandler.getState().getName() + "\n";
 
 		return x;
 	}
@@ -213,7 +130,7 @@ public abstract class Individual extends Entity  {
 	}
 
 	public void setDirection(double d) {
-		double s = (double) speed.getValue() / 50.0;
+		double s = (double) traitHandler.get(Trait.Type.SPEED).getValue() / 50.0;
 		vx = ((double) s * Math.cos(d));
 		vy = ((double) s * Math.sin(d));
 
@@ -225,10 +142,6 @@ public abstract class Individual extends Entity  {
 
 	public void setVy(double vy) {
 		this.vy = vy;
-	}
-
-	public double getSpeed() {
-		return (double) speed.getValue() / 30.0;
 	}
 
 	private void updateMates() {
