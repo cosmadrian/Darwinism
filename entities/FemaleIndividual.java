@@ -3,6 +3,7 @@ package entities;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -16,21 +17,34 @@ import entities.states.MovingState;
 import entities.states.State;
 import entities.states.StateType;
 import exceptions.AlreadyPregnantException;
+import main.Aggregator;
 import main.Main;
+import screen.Screen;
 
 public class FemaleIndividual extends Individual {
 
-	private Color currentColor = Color.RED;
-	private BufferedImage femaleIcon = null;
-	private boolean isPregnant = false;
-	private DNA childDNA;
 	private static final int SIZE = 11;
+	private static final String FEMALE_ICON = "src/female.png";
 
+	private Color currentColor = Color.RED;
+	private static BufferedImage femaleIcon = null;
+	private boolean isPregnant = false;
 	private GestationHandler gestationHandler;
+
+	static {
+		try {
+			femaleIcon = Main.toBufferedImage(Main.TransformColorToTransparency(
+					ImageIO.read(new File(FEMALE_ICON)).getScaledInstance(SIZE, SIZE, Image.SCALE_DEFAULT),
+					Color.green));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 
 	public FemaleIndividual(DNA d) {
 		super(d);
 		gestationHandler = new GestationHandler(this);
+
 	}
 
 	public void render(Graphics g) {
@@ -38,18 +52,16 @@ public class FemaleIndividual extends Individual {
 		super.render(g);
 		g.setColor(Color.black);
 
-		if (femaleIcon == null) {
-			try {
-				femaleIcon = Main.toBufferedImage(Main.TransformColorToTransparency(
-						ImageIO.read(new File("src/female.png")).getScaledInstance(SIZE, SIZE, Image.SCALE_DEFAULT),
-						Color.green));
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+		Screen s = Aggregator.getInstance().getScreen();
+
+		int xOffset = s.getX();
+		int yOffset = s.getY();
+
+		if (s.contains(new Point((int) (x - SIZE / 2), (int) (y - SIZE / 2)))) {
+			g.drawImage(femaleIcon, (int) (x - SIZE / 2 - xOffset), (int) (y - SIZE / 2 - yOffset),
+					femaleIcon.getWidth(), femaleIcon.getHeight(), null);
 		}
 
-		g.drawImage(femaleIcon, (int) (x - SIZE / 2), (int) (y - SIZE / 2), femaleIcon.getWidth(),
-				femaleIcon.getHeight(), null);
 	}
 
 	public void update() {

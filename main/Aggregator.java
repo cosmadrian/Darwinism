@@ -12,18 +12,22 @@ import entities.Food;
 import entities.Individual;
 import map.Map;
 import map.MapGenerator;
+import screen.Screen;
 
 public class Aggregator {
 
 	private static Aggregator instance = null;
 	private ArrayList<Entity> entities;
 	private Map map;
+	private Screen screen;
 
 	public Entity selectedEntity = null;
 
 	private Aggregator() {
 		entities = new ArrayList<Entity>();
 		map = MapGenerator.getInstance().generate();
+		screen = new Screen(map.getWidth(), map.getHeight());
+		map.setScreen(screen);
 	}
 
 	public static Aggregator getInstance() {
@@ -37,7 +41,7 @@ public class Aggregator {
 		for (Entity e : entities) {
 			if (e.equals(selectedEntity)) {
 				g.setColor(Color.BLACK);
-				g.drawRect(e.getX() - 7, e.getY() - 7, 15, 15);
+				g.drawRect(e.getX() - 7 - screen.getX(), e.getY() - 7 - screen.getY(), 15, 15);
 			}
 			e.render(g);
 		}
@@ -85,7 +89,7 @@ public class Aggregator {
 		int xOffset = 20, yOffset = 20;
 		Rectangle r = new Rectangle((int) (p.getX() - xOffset / 2), (int) (p.getY() - yOffset / 2), xOffset, yOffset);
 		for (Entity e : entities) {
-			if (r.contains(e.getX(), e.getY()))
+			if (r.contains(e.getX() - screen.getX(), e.getY() - screen.getY()))
 				return e;
 		}
 		return null;
@@ -103,6 +107,14 @@ public class Aggregator {
 
 		if (selectedEntity != null && selectedEntity.equals(e))
 			selectedEntity = null;
+	}
+
+	public Screen getScreen() {
+		return screen;
+	}
+
+	public Map getMap() {
+		return map;
 	}
 
 }

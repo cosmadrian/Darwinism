@@ -3,7 +3,6 @@ package main;
 import java.awt.Graphics;
 import java.awt.image.BufferStrategy;
 
-import entities.Entity;
 import entities.EntityBuilder;
 import frontend.MainFrame;
 import frontend.StatPanel;
@@ -84,8 +83,9 @@ public class Simulator implements Runnable {
 		}
 		Graphics g = bs.getDrawGraphics();
 
-		frame.render(g);
+		Aggregator.getInstance().renderMap(g);
 		Aggregator.getInstance().renderEntities(g);
+		frame.render(g);
 
 		g.dispose();
 		bs.show();
@@ -97,12 +97,8 @@ public class Simulator implements Runnable {
 		frame.setInputHandler(new UserInput());
 		frame.addPanel(new StatPanel());
 
-		EntityBuilder.getInstance().cookFood(50);
-		EntityBuilder.getInstance().make(Entity.Type.MALE, null, null);
-		EntityBuilder.getInstance().make(Entity.Type.MALE, null, null);
-		EntityBuilder.getInstance().make(Entity.Type.MALE, null, null);
-		EntityBuilder.getInstance().make(Entity.Type.FEMALE, null, null);
-		EntityBuilder.getInstance().make(Entity.Type.FEMALE, null, null);
+		EntityBuilder.getInstance().cookFood(100);
+		EntityBuilder.getInstance().populate(20);
 	}
 
 }

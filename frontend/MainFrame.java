@@ -2,11 +2,10 @@ package frontend;
 
 import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.event.MouseListener;
 
 import javax.swing.JFrame;
 
-import map.Map;
+import input.UserInput;
 
 public class MainFrame extends JFrame {
 
@@ -15,13 +14,11 @@ public class MainFrame extends JFrame {
 	public static final int HEIGHT = 480;
 	public static final int WIDTH = 880;
 	public static final String TITLE = "Darwinism Simulator V1.0[pre-alpha]";
-	private Map map;
 
-	private MouseListener input;
+	private UserInput input;
 	private StatPanel stat;
 
 	public MainFrame() {
-		map = new Map();
 		init();
 	}
 
@@ -32,12 +29,14 @@ public class MainFrame extends JFrame {
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		this.setLocationRelativeTo(null);
 		this.setLayout(null);
-		this.setResizable(false);
+		this.setResizable(true);
 	}
 
-	public void setInputHandler(MouseListener i) {
+	public void setInputHandler(UserInput i) {
 		this.input = i;
 		this.addMouseListener(i);
+		this.addKeyListener(i);
+		this.addMouseMotionListener(i);
 	}
 
 	public void addPanel(StatPanel j) {
@@ -49,7 +48,6 @@ public class MainFrame extends JFrame {
 	}
 	
 	public void render(Graphics g){
-		map.render(g);
 		stat.render(g);
 	}
 }

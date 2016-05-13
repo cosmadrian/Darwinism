@@ -13,7 +13,6 @@ public class GoalMoveState extends State implements ActionListener {
 
 	private double direction;
 	private Entity target;
-	private boolean set = false;
 	private static final int TIMEOUT = 3000;
 	private long startTime;
 
@@ -41,7 +40,6 @@ public class GoalMoveState extends State implements ActionListener {
 	@Override
 	public void clean() {
 		super.clean();
-		set = false;
 		direction = 0.0;
 		target = null;
 		startTime = 0;

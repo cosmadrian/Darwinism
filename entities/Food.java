@@ -3,6 +3,7 @@ package entities;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -11,25 +12,28 @@ import javax.imageio.ImageIO;
 
 import main.Aggregator;
 import main.Main;
+import screen.Screen;
 
 public class Food extends Entity {
 
 	public static final int MAX_FOOD = 100;
+	private static final String FOOD_ICON = "src/food.png";
 
-	private BufferedImage foodIcon;
+	private static BufferedImage foodIcon;
 	private static final int SIZE = 9;
 	private int quantity;
 
-	public Food(int i) {
-		this.quantity = i;
-
+	static {
 		try {
 			foodIcon = Main.toBufferedImage(Main.TransformColorToTransparency(
-					ImageIO.read(new File("src/food.png")).getScaledInstance(SIZE, SIZE, Image.SCALE_DEFAULT),
-					Color.green));
+					ImageIO.read(new File(FOOD_ICON)).getScaledInstance(SIZE, SIZE, Image.SCALE_DEFAULT), Color.green));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	public Food(int i) {
+		this.quantity = i;
 
 	}
 
@@ -46,8 +50,16 @@ public class Food extends Entity {
 	}
 
 	public void render(Graphics g) {
-		g.drawImage(foodIcon, (int) (x - SIZE / 2), (int) (y - SIZE / 2), foodIcon.getWidth(), foodIcon.getHeight(),
-				null);
+
+		Screen s = Aggregator.getInstance().getScreen();
+
+		int xOffset = s.getX();
+		int yOffset = s.getY();
+
+		if (s.contains(new Point((int) (x - SIZE / 2), (int) (y - SIZE / 2)))) {
+			g.drawImage(foodIcon, (int) (x - SIZE / 2 - xOffset), (int) (y - SIZE / 2 - yOffset), foodIcon.getWidth(),
+					foodIcon.getHeight(), null);
+		}
 	}
 
 	@Override

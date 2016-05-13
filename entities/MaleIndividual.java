@@ -3,6 +3,7 @@ package entities;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -15,13 +16,26 @@ import entities.states.IdleState;
 import entities.states.MovingState;
 import entities.states.State;
 import entities.states.StateType;
+import main.Aggregator;
 import main.Main;
+import screen.Screen;
 
 public class MaleIndividual extends Individual {
 
-	private BufferedImage maleIcon = null;
-	private Color currentColor = Color.BLUE;
 	private static final int SIZE = 13;
+	private static final String MALE_ICON = "src/male.png";
+
+	private static BufferedImage maleIcon = null;
+	private Color currentColor = Color.BLUE;
+
+	static {
+		try {
+			maleIcon = Main.toBufferedImage(Main.TransformColorToTransparency(
+					ImageIO.read(new File(MALE_ICON)).getScaledInstance(SIZE, SIZE, Image.SCALE_DEFAULT), Color.green));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 
 	public MaleIndividual(DNA d) {
 		super(d);
@@ -33,18 +47,15 @@ public class MaleIndividual extends Individual {
 		super.render(g);
 		g.setColor(Color.black);
 
-		if (maleIcon == null) {
-			try {
-				maleIcon = Main.toBufferedImage(Main.TransformColorToTransparency(
-						ImageIO.read(new File("src/male.png")).getScaledInstance(SIZE, SIZE, Image.SCALE_DEFAULT),
-						Color.green));
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+		Screen s = Aggregator.getInstance().getScreen();
 
+		int xOffset = s.getX();
+		int yOffset = s.getY();
+
+		if (s.contains(new Point((int) (x - SIZE / 2), (int) (y - SIZE / 2)))) {
+			g.drawImage(maleIcon, (int) (x - SIZE / 2 - xOffset), (int) (y - SIZE / 2 - yOffset), maleIcon.getWidth(),
+					maleIcon.getHeight(), null);
 		}
-		g.drawImage(maleIcon, (int) (x - SIZE / 2), (int) (y - SIZE / 2), maleIcon.getWidth(), maleIcon.getHeight(),
-				null);
 
 	}
 

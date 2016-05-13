@@ -10,9 +10,9 @@ import entities.states.StateHandler;
 import entities.states.StateType;
 import entities.traits.Trait;
 import entities.traits.TraitHandler;
-import frontend.MainFrame;
-import frontend.StatPanel;
+import main.Aggregator;
 import main.Main;
+import screen.Screen;
 
 public abstract class Individual extends Entity {
 
@@ -39,13 +39,14 @@ public abstract class Individual extends Entity {
 		stateHandler = new StateHandler(this);
 	}
 
-
 	public void render(Graphics g) {
 		final int SIZE = 10;
 
+		Screen s = Aggregator.getInstance().getScreen();
+
 		if (getState() == StateType.CALLING) {
-			g.drawOval((int) (x - MATE_CALL_RANGE - SIZE / 2), (int) (y - MATE_CALL_RANGE - SIZE / 2),
-					2 * MATE_CALL_RANGE, 2 * MATE_CALL_RANGE);
+			g.drawOval((int) (x - MATE_CALL_RANGE - SIZE / 2 - s.getX()),
+					(int) (y - MATE_CALL_RANGE - SIZE / 2 - s.getY()), 2 * MATE_CALL_RANGE, 2 * MATE_CALL_RANGE);
 		}
 
 		if (Main.DEBUG) {
@@ -65,17 +66,13 @@ public abstract class Individual extends Entity {
 		traitHandler.update();
 		stateHandler.update();
 
-		if (stateHandler.getStateType() != StateType.MOVING && stateHandler.getStateType() != StateType.MOVING_WITH_GOAL) {
+		if (stateHandler.getStateType() != StateType.MOVING
+				&& stateHandler.getStateType() != StateType.MOVING_WITH_GOAL) {
 			vx = 0;
 			vy = 0;
 		}
 
-		if (x + vx < 10 || x + vx > MainFrame.WIDTH - StatPanel.WIDTH - 10) {
-			vx = -vx;
-		}
-		if (y + vy < 10 || y + vy > MainFrame.HEIGHT - 10) {
-			vy = -vy;
-		}
+		checkCollisions();
 
 		setX(x + vx);
 		setY(y + vy);
@@ -86,8 +83,20 @@ public abstract class Individual extends Entity {
 			this.die();
 	}
 
+	private void checkCollisions() {
+		int maxWidth = Aggregator.getInstance().getMap().getWidth();
+		int maxHeight = Aggregator.getInstance().getMap().getHeight();
+
+		if (x + vx < Entity.BOX_SIZE || x + vx > maxWidth) {
+			vx = -vx;
+		}
+		if (y + vy < Entity.BOX_SIZE || y + vy > maxHeight) {
+			vy = -vy;
+		}
+	}
+
 	public void setState(StateType t, Object option) {
-		stateHandler.setState(t,option);
+		stateHandler.setState(t, option);
 	}
 
 	public Trait getTrait(Trait.Type t) {

@@ -4,8 +4,6 @@ import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Random;
 
-import frontend.MainFrame;
-import frontend.StatPanel;
 import main.Aggregator;
 
 public class EntityBuilder {
@@ -24,6 +22,9 @@ public class EntityBuilder {
 	public Entity make(Entity.Type t, Point p, DNA d) {
 		Entity e = null;
 		Random r = new Random();
+
+		int maxWidth = Aggregator.getInstance().getMap().getWidth();
+		int maxHeight = Aggregator.getInstance().getMap().getHeight();
 
 		if (d == null) {
 			d = new DNA(DNA.generateStrand(t));
@@ -45,8 +46,8 @@ public class EntityBuilder {
 		}
 
 		if (p == null) {
-			e.setX(r.nextInt(MainFrame.WIDTH - StatPanel.WIDTH));
-			e.setY(r.nextInt(MainFrame.HEIGHT));
+			e.setX(r.nextInt(maxWidth));
+			e.setY(r.nextInt(maxHeight));
 
 		} else {
 			e.setY((int) p.getY());
