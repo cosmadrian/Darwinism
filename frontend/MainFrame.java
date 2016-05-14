@@ -29,7 +29,7 @@ public class MainFrame extends JFrame {
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		this.setLocationRelativeTo(null);
 		this.setLayout(null);
-		this.setResizable(true);
+		this.setResizable(false);
 	}
 
 	public void setInputHandler(UserInput i) {

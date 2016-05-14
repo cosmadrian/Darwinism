@@ -4,7 +4,7 @@ import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Random;
 
-import main.Aggregator;
+import map.Map;
 
 public class EntityBuilder {
 
@@ -23,11 +23,17 @@ public class EntityBuilder {
 		Entity e = null;
 		Random r = new Random();
 
-		int maxWidth = Aggregator.getInstance().getMap().getWidth();
-		int maxHeight = Aggregator.getInstance().getMap().getHeight();
+		/* TODO: change these */
+		int maxWidth = Map.WIDTH;
+		int maxHeight = Map.HEIGHT;
 
 		if (d == null) {
-			d = new DNA(DNA.generateStrand(t));
+			if (t != null && t != Entity.Type.FOOD)
+				d = new DNA(DNA.generateStrand(t));
+		}
+
+		if (t == null) {
+			t = d.getGender();
 		}
 
 		switch (t) {
@@ -54,33 +60,28 @@ public class EntityBuilder {
 			e.setX((int) p.getX());
 		}
 
-		Aggregator.getInstance().addEntity(e);
-
 		return e;
 	}
 
 	public ArrayList<Entity> populate(int count) {
 		Random r = new Random();
-		ArrayList<Entity> a = new ArrayList<Entity>();
+		ArrayList<Entity> e = new ArrayList<Entity>();
 
 		for (int i = 0; i < count; i++) {
 			double chance = r.nextDouble();
 			if (chance > 0.5)
-				a.add(make(Entity.Type.MALE, null, null));
+				e.add(make(Entity.Type.MALE, null, null));
 			else
-				a.add(make(Entity.Type.FEMALE, null, null));
+				e.add(make(Entity.Type.FEMALE, null, null));
 		}
-
-		return a;
+		return e;
 	}
 
 	public ArrayList<Entity> cookFood(int count) {
-		ArrayList<Entity> a = new ArrayList<Entity>();
-
+		ArrayList<Entity> e = new ArrayList<Entity>();
 		for (int i = 0; i < count; i++) {
-			a.add(make(Entity.Type.FOOD, null, null));
+			e.add(make(Entity.Type.FOOD, null, null));
 		}
-
-		return a;
+		return e;
 	}
 }

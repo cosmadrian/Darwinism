@@ -3,9 +3,11 @@ package entities;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 import main.Aggregator;
+import screen.Screen;
 
 public abstract class Entity {
 	public static enum Type {
@@ -14,16 +16,15 @@ public abstract class Entity {
 
 	public static final int BOX_SIZE = 20;
 
-	protected static int COUNT = 0;
 	protected double x, y;
 	public int id;
 	protected Rectangle box;
 
 	protected ArrayList<Entity> cache = null;
+	private static int count = 0;
 
 	public Entity() {
-		COUNT++;
-		this.id = COUNT;
+		this.id = count++;
 		this.box = new Rectangle(0, 0, BOX_SIZE, BOX_SIZE);
 	}
 
@@ -125,13 +126,27 @@ public abstract class Entity {
 
 	public abstract void render(Graphics g);
 
+	public void renderIcon(Graphics g, BufferedImage img, int SIZE) {
+		Screen s = Aggregator.getInstance().getScreen();
+
+		int xOffset = s.getX();
+		int yOffset = s.getY();
+
+		if (s.contains(new Point((int) (x - SIZE / 2), (int) (y - SIZE / 2)))) {
+			g.drawImage(img, (int) (x - SIZE / 2 - xOffset), (int) (y - SIZE / 2 - yOffset), img.getWidth(),
+					img.getHeight(), null);
+		}
+	}
+
 	public void update() {
 		cache = null;
 		box.setBounds((int) (x - BOX_SIZE / 2), (int) (y - BOX_SIZE / 2), BOX_SIZE, BOX_SIZE);
 	}
 
 	public void die() {
-		EntityBuilder.getInstance().make(Entity.Type.FOOD, new Point((int) x, (int) y), null);
+		Aggregator.getInstance()
+				.addEntity(EntityBuilder.getInstance().make(Entity.Type.FOOD, new Point((int) x, (int) y), null));
+
 	}
 
 	public Rectangle getBox() {

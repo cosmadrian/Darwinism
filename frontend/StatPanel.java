@@ -2,9 +2,13 @@ package frontend;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
 
+import javax.imageio.ImageIO;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -14,10 +18,13 @@ import entities.Entity;
 import entities.FemaleIndividual;
 import exceptions.AlreadyPregnantException;
 import main.Aggregator;
+import main.Main;
 
 public class StatPanel extends JPanel implements ActionListener {
 
 	private static final long serialVersionUID = -7815061674620254354L;
+	private static final String FILE_NAME = "src/bg.png";
+	private BufferedImage bg;
 
 	public static final int WIDTH = 200;
 	public static final int HEIGHT = 480;
@@ -28,6 +35,12 @@ public class StatPanel extends JPanel implements ActionListener {
 
 	public StatPanel() {
 		init();
+		try {
+			bg = Main.toBufferedImage(
+					ImageIO.read(new File(FILE_NAME)).getScaledInstance(WIDTH, HEIGHT, Image.SCALE_DEFAULT));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	private void init() {
@@ -60,8 +73,8 @@ public class StatPanel extends JPanel implements ActionListener {
 	}
 
 	public void render(Graphics g) {
+		g.drawImage(bg, MainFrame.WIDTH - WIDTH, 0, WIDTH, HEIGHT, null);
 		String formatted = "<html>" + getStats().replace("\n", "<br>") + "</html>";
-
 		text.setText(formatted);
 
 		if (Aggregator.getInstance().selectedEntity != null) {
@@ -75,6 +88,7 @@ public class StatPanel extends JPanel implements ActionListener {
 			this.killButton.setVisible(false);
 			this.impregnateButton.setVisible(false);
 		}
+
 	}
 
 	@Override

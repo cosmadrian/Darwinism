@@ -12,7 +12,7 @@ import entities.traits.Trait;
 
 public class EatingState extends State implements ActionListener {
 
-	public static final Color MALE = new Color(0x828282); // 
+	public static final Color MALE = new Color(0x828282); //
 	public static final Color FEMALE = new Color(0x828282); // gray
 	private static final int EATING_RATE = 8;
 

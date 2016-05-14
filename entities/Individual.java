@@ -1,6 +1,7 @@
 package entities;
 
 import java.awt.Graphics;
+import java.awt.Point;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -44,7 +45,7 @@ public abstract class Individual extends Entity {
 
 		Screen s = Aggregator.getInstance().getScreen();
 
-		if (getState() == StateType.CALLING) {
+		if (getState() == StateType.CALLING && s.contains(new Point((int) (x - SIZE / 2), (int) (y - SIZE / 2)))) {
 			g.drawOval((int) (x - MATE_CALL_RANGE - SIZE / 2 - s.getX()),
 					(int) (y - MATE_CALL_RANGE - SIZE / 2 - s.getY()), 2 * MATE_CALL_RANGE, 2 * MATE_CALL_RANGE);
 		}
@@ -80,7 +81,7 @@ public abstract class Individual extends Entity {
 		updateMates();
 
 		if (traitHandler.get(Trait.Type.HUNGER).getValue() <= 0)
-			this.die();
+			Aggregator.getInstance().kill(this);
 	}
 
 	private void checkCollisions() {

@@ -3,7 +3,6 @@ package entities;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
-import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -12,7 +11,6 @@ import javax.imageio.ImageIO;
 
 import main.Aggregator;
 import main.Main;
-import screen.Screen;
 
 public class Food extends Entity {
 
@@ -51,15 +49,8 @@ public class Food extends Entity {
 
 	public void render(Graphics g) {
 
-		Screen s = Aggregator.getInstance().getScreen();
+		this.renderIcon(g, foodIcon, SIZE);
 
-		int xOffset = s.getX();
-		int yOffset = s.getY();
-
-		if (s.contains(new Point((int) (x - SIZE / 2), (int) (y - SIZE / 2)))) {
-			g.drawImage(foodIcon, (int) (x - SIZE / 2 - xOffset), (int) (y - SIZE / 2 - yOffset), foodIcon.getWidth(),
-					foodIcon.getHeight(), null);
-		}
 	}
 
 	@Override

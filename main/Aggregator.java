@@ -10,6 +10,7 @@ import entities.Entity;
 import entities.EntityBuilder;
 import entities.Food;
 import entities.Individual;
+import map.GaussianHeightGenerator;
 import map.Map;
 import map.MapGenerator;
 import screen.Screen;
@@ -25,8 +26,9 @@ public class Aggregator {
 
 	private Aggregator() {
 		entities = new ArrayList<Entity>();
-		map = MapGenerator.getInstance().generate();
+		map = new MapGenerator(new GaussianHeightGenerator()).generate(entities);
 		screen = new Screen(map.getWidth(), map.getHeight());
+
 		map.setScreen(screen);
 	}
 
@@ -68,11 +70,7 @@ public class Aggregator {
 		map.update();
 	}
 
-	public void setEntities(ArrayList<Entity> e) {
-		this.entities = e;
-	}
-
-	public void addEntities(ArrayList<Entity> e) {
+	public void addAllEntity(ArrayList<Entity> e) {
 		this.entities.addAll(e);
 	}
 
@@ -107,6 +105,7 @@ public class Aggregator {
 
 		if (selectedEntity != null && selectedEntity.equals(e))
 			selectedEntity = null;
+		e = null;
 	}
 
 	public Screen getScreen() {

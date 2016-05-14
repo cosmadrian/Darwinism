@@ -59,6 +59,9 @@ public class GoalMoveState extends State implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 
+		if(source == null || target == null){
+			return;
+		}
 		double distanceToTarget = Math
 				.sqrt(Math.pow(source.getX() - target.getX(), 2) + Math.pow(source.getY() - target.getY(), 2));
 

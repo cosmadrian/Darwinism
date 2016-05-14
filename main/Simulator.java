@@ -83,9 +83,9 @@ public class Simulator implements Runnable {
 		}
 		Graphics g = bs.getDrawGraphics();
 
+		frame.render(g);
 		Aggregator.getInstance().renderMap(g);
 		Aggregator.getInstance().renderEntities(g);
-		frame.render(g);
 
 		g.dispose();
 		bs.show();
@@ -96,9 +96,9 @@ public class Simulator implements Runnable {
 		frame.setVisible(true);
 		frame.setInputHandler(new UserInput());
 		frame.addPanel(new StatPanel());
+		
+		Aggregator.getInstance().addAllEntity(EntityBuilder.getInstance().populate(50));
 
-		EntityBuilder.getInstance().cookFood(100);
-		EntityBuilder.getInstance().populate(20);
 	}
 
 }
